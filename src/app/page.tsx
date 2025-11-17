@@ -15,24 +15,36 @@ export default function Home() {
       <div className="pointer-events-none absolute inset-0 grid-lines" />
 
       <div className="relative mx-auto flex max-w-6xl flex-col gap-10">
-        <div className="flex items-start gap-4">
-          <div className="glass h-14 w-14 shrink-0 rounded-lg border border-white/20 shadow-xl shadow-cyan-500/30">
-            <img src="/file.svg" alt="EFC crest" width={40} height={40} className="m-auto" />
-          </div>
-          <div>
-            <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
-            <h1 className="text-4xl font-semibold tracking-tight text-white drop-shadow">{copy.hero.title}</h1>
-            <p className="mt-3 max-w-3xl text-lg text-slate-200/90 drop-shadow">{copy.hero.subtitle}</p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <a
-                className="rounded-md bg-white/90 px-6 py-3 text-slate-900 shadow-lg shadow-cyan-500/30 transition hover:-translate-y-0.5 hover:bg-white"
-                href="/apply"
-              >
-                {copy.hero.primaryCta}
-              </a>
-              <a className="rounded-md border border-white/30 px-6 py-3 text-white/90 backdrop-blur hover:bg-white/10" href="/privacy">
-                {copy.hero.secondaryCta}
-              </a>
+        <div className="relative overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/50">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/efc-patriotic.jpg')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/65 to-black/30" />
+          <div className="relative flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="glass h-14 w-14 shrink-0 rounded-lg border border-white/20 shadow-xl shadow-cyan-500/30">
+                <img src="/file.svg" alt="EFC crest" width={40} height={40} className="m-auto drop-shadow" />
+              </div>
+              <div>
+                <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
+                <h1 className="text-4xl font-semibold tracking-tight text-white drop-shadow">{copy.hero.title}</h1>
+                <p className="mt-3 max-w-3xl text-lg text-slate-200/90 drop-shadow">{copy.hero.subtitle}</p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <a
+                    className="rounded-md bg-white/95 px-6 py-3 text-slate-900 shadow-lg shadow-cyan-500/30 transition hover:-translate-y-0.5 hover:bg-white"
+                    href="/apply"
+                  >
+                    {copy.hero.primaryCta}
+                  </a>
+                  <a className="rounded-md border border-white/30 px-6 py-3 text-white/90 backdrop-blur hover:bg-white/10" href="/privacy">
+                    {copy.hero.secondaryCta}
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="glass rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-cyan-100 shadow-lg shadow-cyan-500/20">
+              Page + owner portal are yours on Vercel/Neon. Data stays with you.
             </div>
           </div>
         </div>
