@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
+import { copy } from "@/content/efc-hiring.copy";
 
 const states = [
   "AL",
@@ -84,33 +85,37 @@ export default function ApplyPage() {
   };
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
-      <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-            <img src="/file.svg" alt="EFC crest" width={28} height={28} />
+    <main className="relative isolate px-4 py-12">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/65" />
+      <div className="relative mx-auto max-w-3xl">
+        <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="glass h-12 w-12 items-center justify-center rounded-lg border border-white/20 bg-white/10 shadow-lg shadow-cyan-500/20 backdrop-blur">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-black/40">
+                <img src="/file.svg" alt="EFC crest" width={28} height={28} />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
+              <h1 className="text-3xl font-semibold tracking-tight text-white">CDL Hiring — Start Here</h1>
+            </div>
           </div>
-          <div>
-            <p className="text-sm uppercase text-muted-foreground">Eagle Family Carriers</p>
-            <h1 className="text-3xl font-semibold tracking-tight">CDL Hiring — Start Here</h1>
-          </div>
-        </div>
-        <p className="max-w-md text-sm text-muted-foreground">Tell us a bit about you. We reach out within one business day.</p>
-      </header>
+          <p className="max-w-md text-sm text-slate-200/80">{copy.form.subheading}</p>
+        </header>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="glass-panel space-y-4 rounded-2xl border border-white/15 bg-white/8 p-6 shadow-xl shadow-black/30 backdrop-blur-xl">
         <div className="grid gap-4 md:grid-cols-2">
-          <Field label="First name" error={form.formState.errors.firstName?.message} {...form.register("firstName")} />
-          <Field label="Last name" error={form.formState.errors.lastName?.message} {...form.register("lastName")} />
+          <Field label={copy.form.fields.firstName.label} placeholder={copy.form.fields.firstName.placeholder} error={form.formState.errors.firstName?.message} {...form.register("firstName")} />
+          <Field label={copy.form.fields.lastName.label} placeholder={copy.form.fields.lastName.placeholder} error={form.formState.errors.lastName?.message} {...form.register("lastName")} />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Mobile phone" error={form.formState.errors.phone?.message} {...form.register("phone")} />
-          <Field label="Email" error={form.formState.errors.email?.message} {...form.register("email")} />
+          <Field label={copy.form.fields.phone.label} placeholder={copy.form.fields.phone.placeholder} error={form.formState.errors.phone?.message} {...form.register("phone")} />
+          <Field label={copy.form.fields.email.label} placeholder={copy.form.fields.email.placeholder} error={form.formState.errors.email?.message} {...form.register("email")} />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          <Field label="City" error={form.formState.errors.city?.message} {...form.register("city")} />
+          <Field label={copy.form.fields.city.label} placeholder={copy.form.fields.city.placeholder} error={form.formState.errors.city?.message} {...form.register("city")} />
           <div>
-            <label className="block text-sm font-medium text-foreground">State</label>
+            <label className="block text-sm font-medium text-foreground">{copy.form.fields.state.label}</label>
             <select className="mt-1 w-full rounded border border-input bg-background px-3 py-2" {...form.register("state")}>
               <option value="">Select</option>
               {states.map((s) => (
@@ -124,29 +129,34 @@ export default function ApplyPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <LabeledSelect label="CDL Class" options={["A", "B", "C"]} {...form.register("cdlClass")} />
-          <LabeledSelect label="Years experience" options={["0-1", "1-3", "3-5", "5+"]} {...form.register("yearsExperience")} />
-          <LabeledSelect label="Shift preference" options={["Day", "Night", "Team"]} {...form.register("shiftPref")} />
+          <LabeledSelect label={copy.form.fields.cdlClass.label} options={copy.form.fields.cdlClass.options} {...form.register("cdlClass")} />
+          <LabeledSelect label={copy.form.fields.yearsExperience.label} options={["0-1", "1-3", "3-5", "5+"]} {...form.register("yearsExperience")} />
+          <LabeledSelect label={copy.form.fields.shiftPref.label} options={copy.form.fields.shiftPref.options} {...form.register("shiftPref")} />
         </div>
 
         <div>
-          <p className="mb-1 text-sm font-medium text-foreground">Endorsements</p>
+          <p className="mb-1 text-sm font-medium text-foreground">{copy.form.fields.endorsements.label}</p>
           <div className="flex flex-wrap gap-3">
-            {["T", "N", "H", "X"].map((code) => (
-              <label key={code} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" value={code} {...form.register("endorsements")} />
-                <span>{code}</span>
+            {copy.form.fields.endorsements.options.map((option) => (
+              <label key={option.value} className="flex items-center gap-2 text-sm">
+                <input type="checkbox" value={option.value} {...form.register("endorsements")} />
+                <span>{option.label}</span>
               </label>
             ))}
           </div>
         </div>
 
-        <Field label="Availability date" type="date" {...form.register("availabilityDate")} />
-        <LabeledSelect label="Terminal preference" options={["Hagerstown", "Raleigh", "Either"]} {...form.register("terminalPref")} />
-        <Field label="Resume link (optional)" {...form.register("resumeUrl")} />
+        <Field label={copy.form.fields.availabilityDate.label} type="date" {...form.register("availabilityDate")} />
+        <LabeledSelect label={copy.form.fields.terminalPref.label} options={copy.form.fields.terminalPref.options} {...form.register("terminalPref")} />
+        <Field label={copy.form.fields.resumeUrl.label} placeholder={copy.form.fields.resumeUrl.placeholder} {...form.register("resumeUrl")} />
         <div>
-          <label className="block text-sm font-medium text-foreground">Notes</label>
-          <textarea className="mt-1 w-full rounded border border-input bg-background px-3 py-2" rows={4} {...form.register("notes")} />
+          <label className="block text-sm font-medium text-foreground">{copy.form.fields.notes.label}</label>
+          <textarea
+            className="mt-1 w-full rounded border border-input bg-background px-3 py-2"
+            rows={4}
+            placeholder={copy.form.fields.notes.placeholder}
+            {...form.register("notes")}
+          />
         </div>
 
         {/* Hidden fields */}
@@ -159,7 +169,7 @@ export default function ApplyPage() {
 
         <label className="flex items-start gap-2 text-sm">
           <input type="checkbox" className="mt-1" {...form.register("consent")} />
-          <span>You may contact me about employment via phone/SMS/email.</span>
+          <span>{copy.form.fields.consent.label}</span>
         </label>
         {form.formState.errors.consent?.message && <p className="text-sm text-destructive">{form.formState.errors.consent.message}</p>}
 
@@ -168,11 +178,11 @@ export default function ApplyPage() {
           className="w-full rounded-md bg-foreground px-4 py-3 text-background transition hover:opacity-90 disabled:opacity-50"
           disabled={status === "loading"}
         >
-          {status === "loading" ? "Submitting..." : "Submit application"}
+          {status === "loading" ? copy.form.submitting : copy.form.submit}
         </button>
 
-        {status === "ok" && <p className="text-sm text-green-600">Thanks! We received your application.</p>}
-        {status === "error" && <p className="text-sm text-destructive">Something went wrong. Please try again.</p>}
+        {status === "ok" && <p className="text-sm text-green-400">{copy.form.successBody}</p>}
+        {status === "error" && <p className="text-sm text-destructive">{copy.form.errorBody}</p>}
 
         <p className="text-xs text-muted-foreground">
           By submitting, you agree to be contacted about employment. Read our{" "}
@@ -182,6 +192,7 @@ export default function ApplyPage() {
           .
         </p>
       </form>
+      </div>
     </main>
   );
 }
