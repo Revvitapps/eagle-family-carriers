@@ -13,7 +13,7 @@ export const applicantSchema = z.object({
   state: z.string().length(2, "Use 2-letter state code"),
   cdlClass: z.enum(["A", "B", "C"]),
   yearsExperience: z.enum(["0-1", "1-3", "3-5", "5+"]),
-  endorsements: z.array(z.enum(["T", "N", "H", "X"])).optional().default([]),
+  endorsements: z.array(z.enum(["T", "N", "H", "X"])).default([]),
   availabilityDate: z.string().optional(),
   shiftPref: z.enum(["Day", "Night", "Team"]).optional(),
   terminalPref: z.enum(["Hagerstown", "Raleigh", "Either"]).optional(),
@@ -26,7 +26,7 @@ export const applicantSchema = z.object({
   ip_hash: z.string().optional(),
   user_agent: z.string().optional(),
   website: z.string().max(0).optional(), // Honeypot
-  consent: z.literal(true, { errorMap: () => ({ message: "Consent required" }) }),
+  consent: z.boolean().refine((v) => v === true, { message: "Consent required" }),
 });
 
 export type ApplicantInput = z.infer<typeof applicantSchema>;
