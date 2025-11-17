@@ -118,5 +118,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), url("/efc-patriotic.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
   }
 }
