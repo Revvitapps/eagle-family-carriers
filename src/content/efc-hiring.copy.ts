@@ -16,9 +16,8 @@ export const copy = {
 
   hero: {
     kicker: "EAGLE FAMILY CARRIERS",
-    title: "Hiring Landing Starter",
-    subtitle:
-      "Launch the CDL hiring intake on Vercel. Start with the application form, then light up the owner portal + automations when ready.",
+    title: "CDL Driver Application",
+    subtitle: "Apply in a few minutes. Your details go straight to the Eagle Family Carriers hiring team.",
     primaryCta: "Start Application",
     secondaryCta: "Privacy",
   },
@@ -27,22 +26,22 @@ export const copy = {
     {
       icon: "file",
       title: "Branded crest",
-      body: "Crest-forward favicon and header logo keep the experience on-brand.",
+      body: "Eagle Family Carriers logo and crest on every screen.",
     },
     {
       icon: "bolt",
-      title: "Instant deploy",
-      body: "Vercel-ready build with linting, fonts, and Tailwind.",
+      title: "Fast intake",
+      body: "Edge runtime and light form for quick submissions.",
     },
     {
       icon: "globe",
-      title: "Global-ready",
-      body: "Edge runtime keeps submissions fast across regions.",
+      title: "Reliable logging",
+      body: "Submissions land in your database with UTM/source capture.",
     },
     {
       icon: "layout",
       title: "Owner portal starter",
-      body: "Routes stubbed for hiring dashboard and future driver features.",
+      body: "Dashboard routes stubbed for applicant queue and stages.",
     },
   ],
 
