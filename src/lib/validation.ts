@@ -29,4 +29,7 @@ export const applicantSchema = z.object({
   consent: z.boolean().refine((v) => v === true, { message: "Consent required" }),
 });
 
-export type ApplicantInput = z.infer<typeof applicantSchema>;
+// Form inputs (pre-parse) allow optional/defaulted fields like endorsements.
+export type ApplicantInput = z.input<typeof applicantSchema>;
+// Parsed/validated data type when consumed elsewhere.
+export type ApplicantData = z.infer<typeof applicantSchema>;
