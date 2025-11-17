@@ -86,14 +86,12 @@ export default function ApplyPage() {
 
   return (
     <main className="relative isolate px-4 py-12">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/65" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/75" />
       <div className="relative mx-auto max-w-3xl">
         <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="glass h-12 w-12 items-center justify-center rounded-lg border border-white/20 bg-white/10 shadow-lg shadow-cyan-500/20 backdrop-blur">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-black/40">
-                <img src="/file.svg" alt="EFC crest" width={28} height={28} />
-              </div>
+            <div className="glass h-12 w-12 items-center justify-center rounded-lg border border-white/20 shadow-lg shadow-cyan-500/20">
+              <img src="/file.svg" alt="EFC crest" width={28} height={28} className="m-auto" />
             </div>
             <div>
               <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
