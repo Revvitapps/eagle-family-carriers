@@ -1,11 +1,9 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col justify-center gap-10 px-4 py-16">
       <div className="flex items-start gap-4">
         <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-muted">
-          <Image src="/file.svg" alt="EFC crest" width={40} height={40} />
+          <img src="/file.svg" alt="EFC crest" width={40} height={40} />
         </div>
         <div>
           <p className="text-sm uppercase tracking-wide text-muted-foreground">Eagle Family Carriers</p>
@@ -29,7 +27,7 @@ export default function Home() {
         {featureCards.map((item) => (
           <div key={item.title} className="rounded-lg border border-input bg-card p-4 shadow-sm">
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-muted/80">
-              <Image src={item.icon} alt={item.title} width={24} height={24} />
+              <img src={item.icon} alt={item.title} width={24} height={24} />
             </div>
             <h3 className="text-base font-semibold leading-6">{item.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{item.body}</p>

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
@@ -89,7 +88,7 @@ export default function ApplyPage() {
       <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-            <Image src="/file.svg" alt="EFC crest" width={28} height={28} />
+            <img src="/file.svg" alt="EFC crest" width={28} height={28} />
           </div>
           <div>
             <p className="text-sm uppercase text-muted-foreground">Eagle Family Carriers</p>
