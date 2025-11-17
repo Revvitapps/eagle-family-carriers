@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       cdlClass: data.cdlClass,
       yearsExperience: data.yearsExperience,
       endorsements: data.endorsements,
-      availabilityDate: data.availabilityDate ? new Date(data.availabilityDate) : null,
+      availabilityDate: data.availabilityDate ? new Date(data.availabilityDate).toISOString().slice(0, 10) : null,
       shiftPref: data.shiftPref,
       terminalPref: data.terminalPref,
       resumeUrl: data.resumeUrl || null,
