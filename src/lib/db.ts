@@ -2,12 +2,16 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "@/db/schema";
 
-const connectionString = process.env.DATABASE_URL;
+let dbInstance: ReturnType<typeof drizzle> | null = null;
 
-if (!connectionString) {
-  throw new Error("DATABASE_URL is not set");
+export function getDb() {
+  if (!dbInstance) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error("DATABASE_URL is not set");
+    }
+    const sql = neon(connectionString);
+    dbInstance = drizzle(sql, { schema });
+  }
+  return dbInstance;
 }
-
-const sql = neon(connectionString);
-
-export const db = drizzle(sql, { schema });

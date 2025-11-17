@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { applicants } from "@/db/schema";
 import { applicantSchema } from "@/lib/validation";
 
@@ -23,6 +23,8 @@ export async function POST(req: Request) {
 
     const ip = req.headers.get("x-forwarded-for") || "";
     const ipHash = ip ? await hashIP(ip) : undefined;
+
+    const db = getDb();
 
     await db.insert(applicants).values({
       firstName: data.firstName,
