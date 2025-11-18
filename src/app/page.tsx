@@ -1,5 +1,6 @@
 import { copy } from "@/content/efc-hiring.copy";
 import { Bolt, FileText, Globe2, LayoutPanelTop } from "lucide-react";
+import Link from "next/link";
 
 const icons = {
   file: FileText,
@@ -11,40 +12,42 @@ const icons = {
 export default function Home() {
   return (
     <main className="relative isolate min-h-screen overflow-hidden px-4 py-16">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_35%),linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.8))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_48%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.05),transparent_40%),linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.7))]" />
       <div className="pointer-events-none absolute inset-0 grid-lines" />
 
+      {/* Floating logo letterhead-style */}
+      <Link
+        href="/"
+        className="pointer-events-auto absolute left-6 top-6 z-10 flex items-center gap-3"
+        aria-label="Back to home"
+      >
+        <img src="/efc-crest.jpeg" alt="EFC crest" width={72} height={72} className="rounded-2xl shadow-2xl shadow-black/40" />
+      </Link>
+
       <div className="relative mx-auto flex max-w-6xl flex-col gap-10">
-        <div className="relative overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/50">
+        <div className="mb-2 h-16" aria-hidden="true" />
+
+        <div className="relative overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/50 p-2">
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/eagle-warehouse-trucks.png')" }}
+            style={{
+              backgroundImage: "url('/eagle-warehouse-trucks.png')",
+              backgroundPosition: "center 98%",
+              backgroundSize: "cover",
+            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/30 to-black/15" />
-          <div className="relative flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-4">
-              <div className="glass h-14 w-14 shrink-0 rounded-lg border border-white/20 shadow-xl shadow-cyan-500/30">
-                <img src="/efc-crest.jpeg" alt="EFC crest" width={40} height={40} className="m-auto drop-shadow" />
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
-                <h1 className="text-4xl font-semibold tracking-tight text-white drop-shadow">{copy.hero.title}</h1>
-                <p className="mt-3 max-w-3xl text-lg text-slate-200/90 drop-shadow">{copy.hero.subtitle}</p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <a
-                    className="rounded-md bg-white/95 px-6 py-3 text-slate-900 shadow-lg shadow-cyan-500/30 transition hover:-translate-y-0.5 hover:bg-white"
-                    href="/apply"
-                  >
-                    {copy.hero.primaryCta}
-                  </a>
-                  <a className="rounded-md border border-white/30 px-6 py-3 text-white/90 backdrop-blur hover:bg-white/10" href="/privacy">
-                    {copy.hero.secondaryCta}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="glass rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-cyan-100 shadow-lg shadow-cyan-500/20">
-              Page + owner portal are yours on Vercel/Neon. Data stays with you.
+          <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/6 to-black/3" />
+          <div className="relative flex flex-col items-center gap-6 p-12 text-center">
+            <p className="text-base font-bold uppercase tracking-[0.24em] text-white drop-shadow">{copy.hero.kicker}</p>
+            <h1 className="text-5xl font-semibold tracking-tight text-white drop-shadow">{copy.hero.title}</h1>
+            <div className="mx-auto mt-33 inline-flex max-w-lg flex-col items-center justify-center gap-3 rounded-2xl border border-white/20 bg-black/75 px-6 py-5 text-slate-100 shadow-lg shadow-black/40 backdrop-blur">
+              <p className="text-sm leading-relaxed drop-shadow text-center">{copy.hero.subtitle}</p>
+              <a
+                className="rounded-md border border-white/25 bg-white/15 px-6 py-3 text-white shadow-lg shadow-black/30 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/20"
+                href="/apply"
+              >
+                {copy.hero.primaryCta}
+              </a>
             </div>
           </div>
         </div>
@@ -82,6 +85,23 @@ export default function Home() {
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="flex justify-center">
+          <a className="rounded-md border border-white/25 bg-white/15 px-6 py-3 text-white shadow-lg shadow-black/30 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/20" href="#">
+            5-min evaluation with our virtual assistant
+          </a>
+        </div>
+
+        <div className="rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm text-slate-100 shadow-lg shadow-black/30 backdrop-blur-xl">
+          <p className="font-semibold text-white text-center">Privacy</p>
+          <p className="mt-1 leading-relaxed text-slate-200/85 text-center">
+            We collect only the information needed to evaluate your application and contact you about employment. See our{" "}
+            <a href="/privacy" className="underline">
+              Privacy Policy
+            </a>
+            .
+          </p>
         </div>
       </div>
     </main>

@@ -87,6 +87,13 @@ export default function ApplyPage() {
   return (
     <main className="relative isolate px-4 py-12">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/75" />
+      <Link
+        href="/"
+        className="pointer-events-auto absolute left-6 top-6 z-10 flex items-center gap-3"
+        aria-label="Back to home"
+      >
+        <img src="/efc-crest.jpeg" alt="EFC crest" width={72} height={72} className="rounded-2xl shadow-2xl shadow-black/40" />
+      </Link>
       <div className="relative mx-auto max-w-3xl">
         <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
