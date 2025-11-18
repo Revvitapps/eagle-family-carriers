@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="20" y1="12" x2="116" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#0B3E74"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="white" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="white" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#g1)" stroke="white" stroke-width="4" />
+  <path d="M28 64c6-8 16-14 28-14 16 0 30 10 40 24" stroke="url(#g2)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M28 82c8-10 20-16 32-16 14 0 26 6 36 18" stroke="white" stroke-width="4" stroke-linecap="round" stroke-opacity="0.6"/>
+  <path d="M64 28l6.5 14h15l-12 10.5L79 68l-15-9.5L49 68l5.5-15.5L42 42h15L64 28Z" fill="white" fill-opacity="0.85"/>
+  <text x="64" y="94" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" text-anchor="middle" fill="white">EFC</text>
+</svg>

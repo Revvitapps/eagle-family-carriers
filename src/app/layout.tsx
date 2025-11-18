@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Eagle Family Carriers Hiring",
   description: "CDL hiring intake with on-brand crest, fast Edge API, and owner portal starter.",
   icons: {
-    icon: "/file.svg",
+    icon: "/logo-efc.svg",
   },
 };
 

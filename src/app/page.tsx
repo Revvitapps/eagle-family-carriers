@@ -18,13 +18,13 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-3xl border border-white/15 shadow-2xl shadow-black/50">
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/efc-patriotic.jpg')" }}
+            style={{ backgroundImage: "url('/efc-patriotic.svg')" }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/65 to-black/30" />
           <div className="relative flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-4">
               <div className="glass h-14 w-14 shrink-0 rounded-lg border border-white/20 shadow-xl shadow-cyan-500/30">
-                <img src="/file.svg" alt="EFC crest" width={40} height={40} className="m-auto drop-shadow" />
+                <img src="/logo-efc.svg" alt="EFC crest" width={40} height={40} className="m-auto drop-shadow" />
               </div>
               <div>
                 <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
