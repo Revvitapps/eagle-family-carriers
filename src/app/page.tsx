@@ -20,7 +20,7 @@ export default function Home() {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url('/eagle-warehouse-trucks.png')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/65 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/30 to-black/15" />
           <div className="relative flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-4">
               <div className="glass h-14 w-14 shrink-0 rounded-lg border border-white/20 shadow-xl shadow-cyan-500/30">
@@ -55,7 +55,7 @@ export default function Home() {
             return (
               <div
                 key={item.title}
-                className="rounded-xl border border-white/25 bg-white/12 p-4 shadow-lg shadow-black/40 backdrop-blur-xl"
+                className="rounded-xl border border-white/15 bg-white/10 p-4 shadow-lg shadow-black/30 backdrop-blur-xl"
               >
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-white/10 text-cyan-200">
                   <Icon size={22} strokeWidth={2} />
@@ -67,7 +67,7 @@ export default function Home() {
           })}
         </div>
 
-        <div className="rounded-2xl border border-white/25 bg-white/12 p-6 shadow-xl shadow-black/30 backdrop-blur-xl">
+        <div className="rounded-2xl border border-white/15 bg-white/10 p-6 shadow-xl shadow-black/30 backdrop-blur-xl">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-xl font-semibold tracking-tight text-white">{copy.included.heading}</h2>
             <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-cyan-100">
