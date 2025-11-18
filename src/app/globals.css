@@ -64,11 +64,11 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01" on, "cv05" on;
     background:
-      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 40%),
-      radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.06), transparent 35%),
-      linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.85)),
-      url("/efc-patriotic.jpg");
-    background-size: cover;
+      linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.9)),
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.08), transparent 35%),
+      url("/night-truck-cross-background.jpeg");
+    background-size: cover, cover, cover, cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
