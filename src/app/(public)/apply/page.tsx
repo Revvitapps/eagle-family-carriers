@@ -91,7 +91,7 @@ export default function ApplyPage() {
         <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="glass h-12 w-12 items-center justify-center rounded-lg border border-white/20 shadow-lg shadow-cyan-500/20">
-              <img src="/logo-efc.svg" alt="EFC crest" width={28} height={28} className="m-auto" />
+              <img src="/efc-crest.jpeg" alt="EFC crest" width={28} height={28} className="m-auto" />
             </div>
             <div>
               <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
