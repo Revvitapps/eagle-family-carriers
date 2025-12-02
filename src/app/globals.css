@@ -110,3 +110,33 @@
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 2.5rem);
 }
+
+.hero-pan {
+  animation: heroPan 18s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+.reveal {
+  opacity: 0;
+  animation: fadeUp 0.9s ease-out 0.1s forwards;
+}
+
+@keyframes heroPan {
+  0% {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.08) translate3d(2%, -2%, 0);
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

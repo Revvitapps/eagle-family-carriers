@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
@@ -92,13 +93,26 @@ export default function ApplyPage() {
         className="pointer-events-auto absolute left-6 top-6 z-10 flex items-center gap-3"
         aria-label="Back to home"
       >
-        <img src="/efc-crest.jpeg" alt="EFC crest" width={72} height={72} className="rounded-2xl shadow-2xl shadow-black/40" />
+        <Image
+          src="/efc-crest.jpeg"
+          alt="EFC crest"
+          width={72}
+          height={72}
+          className="rounded-2xl shadow-2xl shadow-black/40"
+          priority
+        />
       </Link>
       <div className="relative mx-auto max-w-3xl">
         <header className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="glass h-12 w-12 items-center justify-center rounded-lg border border-white/20 shadow-lg shadow-cyan-500/20">
-              <img src="/efc-crest.jpeg" alt="EFC crest" width={28} height={28} className="m-auto" />
+              <Image
+                src="/efc-crest.jpeg"
+                alt="EFC crest"
+                width={28}
+                height={28}
+                className="m-auto"
+              />
             </div>
             <div>
               <p className="text-sm uppercase tracking-[0.18em] text-slate-200/80">{copy.hero.kicker}</p>
