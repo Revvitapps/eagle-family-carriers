@@ -9,56 +9,61 @@ export const copy = {
   nav: {
     brand: "Eagle Family Carriers",
     ctas: {
-      primary: "Start Application",
+      primary: "Learn more",
       secondary: "Privacy",
     },
     links: [
+      { label: "Positions", href: "#positions" },
+      { label: "Role", href: "#role" },
       { label: "Story", href: "#story" },
       { label: "Bonuses", href: "#bonuses" },
       { label: "Schedules", href: "#schedule" },
       { label: "Family", href: "#culture" },
+      { label: "Routes", href: "#routes" },
       { label: "Apply", href: "#apply" },
     ],
   },
 
   hero: {
     kicker: "EAGLE FAMILY CARRIERS",
-    title: "CDL Driver Application",
-    subtitle: "Apply in a few minutes. Your details go straight to the Eagle Family Carriers hiring team.",
-    primaryCta: "Start Application",
+    title: "CDL Class A Truck Driver — Home-Every-Weekend Option",
+    subtitle: "Driver-first details: pay, routes, home time, and qualifications. Apply in minutes and hear back within a day.",
+    primaryCta: "Learn more",
     secondaryCta: "Privacy",
   },
 
   features: [
     {
       icon: "file",
-      title: "Branded crest",
-      body: "Eagle Family Carriers logo and crest on every screen.",
+      title: "Home every weekend",
+      body: "Reliable home time options with protected reset windows.",
     },
     {
       icon: "bolt",
-      title: "Fast intake",
-      body: "Edge runtime and light form for quick submissions.",
+      title: "Steady miles",
+      body: "Regional and long-haul freight with minimal deadhead.",
     },
     {
       icon: "globe",
-      title: "Reliable logging",
-      body: "Submissions land in your database with UTM/source capture.",
+      title: "24/7 dispatch",
+      body: "Second-ring support for reroutes, weather, or customer updates.",
     },
     {
       icon: "layout",
-      title: "Owner portal starter",
-      body: "Dashboard routes stubbed for applicant queue and stages.",
+      title: "Paid bonuses",
+      body: "Safety, fuel, and on-time bonuses plus clean DOT payouts.",
     },
   ],
 
   included: {
-    heading: "What's included",
+    heading: "What you get",
     bullets: [
-      "App Router + Tailwind + shadcn/ui",
-      "Edge API to Neon Postgres with Drizzle",
-      "Honeypot + consent gate for anti-spam",
-      "UTM + source capture",
+      "Competitive mileage or load-based pay aligned to your route mix",
+      "Quarterly safety, fuel, and on-time bonuses",
+      "Late-model sleepers with preventative maintenance on schedule",
+      "Health, dental, vision, life insurance",
+      "Home-every-weekend options; predictable weekly schedules",
+      "Clean DOT inspections paid the same week",
     ],
   },
 
@@ -97,6 +102,9 @@ export const copy = {
           { value: "X", label: "X — Tank + Hazmat" },
         ],
       },
+      coDriverName: { label: "Co-driver full name (team only)", placeholder: "Optional unless applying as a team" },
+      coDriverPhone: { label: "Co-driver phone", placeholder: "(555) 555-5555" },
+      coDriverEmail: { label: "Co-driver email", placeholder: "teammate@example.com" },
       availabilityDate: { label: "Available to start", placeholder: "" },
       shiftPref: {
         label: "Shift preference",
@@ -177,6 +185,94 @@ export const copy = {
   },
 
   sections: {
+    positions: [
+      {
+        slug: "solo-run",
+        isTeam: false,
+        title: "Solo Driver — Full-Time Class A CDL",
+        payRange: "$1,500–$1,700 weekly",
+        summary: "Solo routes with steady miles, protected weekend resets, and paid safety/on-time bonuses.",
+        bullets: [
+          "Hagerstown-based regional and long-haul loops",
+          "Home every weekend or weekly, depending on lane",
+          "Mileage or load-based pay plus safety/fuel bonuses",
+        ],
+      },
+      {
+        slug: "start-asap",
+        isTeam: true,
+        title: "Teams Driver — Full-Time Class A CDL",
+        payRange: "$1,500–$2,300 weekly",
+        summary: "Team lanes with higher earning potential, protected resets, and quick onboarding for qualified partners.",
+        bullets: [
+          "Team-focused lanes out of Hagerstown, MD",
+          "Weekly home time with predictable resets",
+          "Mileage or load-based pay plus clean DOT payouts and team bonuses",
+        ],
+      },
+    ],
+
+    role: {
+      heading: "Truck Driver (CDL Class A)",
+      summary:
+        "Reliable CDL Class A driver to haul regional and long-haul freight with steady miles, predictable home time, and a dispatch team that answers on the second ring.",
+      location: {
+        heading: "Location",
+        bullets: [
+          "Based in Hagerstown, Maryland — open to local and regional routes.",
+          "Long-haul and company driver opportunities available.",
+        ],
+      },
+      employment: {
+        heading: "Employment type & schedule",
+        bullets: [
+          "Full-time company driver.",
+          "Home time: home every weekend or weekly, depending on route.",
+          "Mileage- or load-based pay with safety, performance, and fuel bonuses.",
+        ],
+      },
+      compensation: {
+        heading: "Compensation & bonus overview",
+        bullets: [
+          "Competitive mileage or load-based pay aligned to route mix.",
+          "Quarterly safety, fuel, and on-time bonuses.",
+          "Clean DOT inspections paid the same week.",
+        ],
+      },
+      responsibilities: {
+        heading: "What you’ll do",
+        bullets: [
+          "Operate a tractor-trailer safely and efficiently to deliver freight on time.",
+          "Conduct pre-trip and post-trip inspections for safety and compliance.",
+          "Communicate with dispatch and customers about ETAs, routes, and any issues.",
+          "Follow traffic laws and maintain all required endorsements for assigned loads.",
+        ],
+      },
+      qualifications: {
+        heading: "Qualifications (must-haves)",
+        bullets: [
+          "2 years’ verifiable Class A tractor-trailer experience in the past 3 years.",
+          "Clean motor vehicle record; must be 21+.",
+          "Able to pass background check and drug screen.",
+          "No felonies/violent or drug-related misdemeanors in the last 10 years.",
+          "Doubles/Triples endorsement (training available if new to pulling doubles).",
+        ],
+      },
+      benefits: {
+        heading: "Benefits & perks",
+        bullets: ["Health Insurance", "Dental Insurance", "Vision Insurance", "Life Insurance"],
+      },
+      applySteps: {
+        heading: "How to apply",
+        bullets: [
+          "Click “Start Application” to complete the short form (about 5 minutes).",
+          "Confirm you meet the required qualifications above before starting.",
+          "We review within 24 hours and contact qualified drivers for a quick interview.",
+          "Prefer to talk first? Email hiring@eaglefamilycarriers.com.",
+        ],
+      },
+    },
+
     story: {
       ribbon: "25 YEARS ON THE ROAD",
       heading: "Family-run and built to last",
@@ -249,9 +345,21 @@ export const copy = {
     apply: {
       heading: "Roll with Eagle Family Carriers",
       body:
-        "Take five minutes to tell us how you like to run — routes, shifts, and career goals. Our recruiting team responds within one business day.",
-      primaryCta: "Start Application",
+        "Tell us how you like to run — routes, shifts, and career goals. We respond within one business day to line up the right lane.",
+      primaryCta: "I meet these — Start application",
       secondaryCta: "Talk with recruiting",
+    },
+
+    routes: {
+      heading: "Routes & lanes",
+      body: "Primary freight runs out of Hagerstown with regional loops and select long-haul lanes. See the running map and typical resets.",
+      bullets: [
+        "Regional loops: Northeast and Mid-Atlantic with weekend resets.",
+        "Long haul: Midwest and Southeast rotations with planned layovers.",
+        "No forced dispatch; routes locked mid-week to protect your plan.",
+      ],
+      ctaLabel: "View running lanes map",
+      ctaHref: "https://www.google.com/maps/place/Hagerstown,+MD",
     },
   },
 };

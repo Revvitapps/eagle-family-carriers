@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const data = parsed.data;
 
     // Honeypot guard: silently accept bot submissions
-    if (data.website) {
+    if (data.meta.website) {
       return NextResponse.json({ ok: true }, { status: 200 });
     }
 
@@ -26,27 +26,49 @@ export async function POST(req: Request) {
 
     const db = getDb();
 
+    const [firstName, ...rest] = data.personalInfo.fullName.split(" ");
+    const lastName = rest.join(" ") || "(none)";
+
     await db.insert(applicants).values({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email || null,
-      phone: data.phone,
-      city: data.city,
-      state: data.state,
-      cdlClass: data.cdlClass,
-      yearsExperience: data.yearsExperience,
-      endorsements: data.endorsements,
-      availabilityDate: data.availabilityDate ? new Date(data.availabilityDate).toISOString().slice(0, 10) : null,
-      shiftPref: data.shiftPref,
-      terminalPref: data.terminalPref,
-      resumeUrl: data.resumeUrl || null,
-      notes: data.notes,
-      source: data.source || "Direct",
-      utmSource: data.utm_source,
-      utmMedium: data.utm_medium,
-      utmCampaign: data.utm_campaign,
+      firstName,
+      lastName,
+      email: data.personalInfo.email || null,
+      phone: data.personalInfo.phone,
+      city: data.personalInfo.currentAddress.city,
+      state: data.personalInfo.currentAddress.state,
+      cdlClass: data.cdlInfo.licenseType,
+      yearsExperience: String(data.drivingExperience.totalYearsCdlA),
+      endorsements: data.cdlInfo.endorsements,
+      availabilityDate: data.positionEligibility.availableStartDate
+        ? new Date(data.positionEligibility.availableStartDate).toISOString().slice(0, 10)
+        : null,
+      shiftPref: data.workPreferences.nightShift ? "Night" : data.workPreferences.dayShift ? "Day" : undefined,
+      terminalPref: null,
+      resumeUrl: data.attachments.resume || null,
+      notes: data.cultureFit.aboutYou,
+      source: data.meta.source || "Direct",
+      utmSource: data.meta.utm_source,
+      utmMedium: data.meta.utm_medium,
+      utmCampaign: data.meta.utm_campaign,
       ipHash,
-      meta: { user_agent: data.user_agent },
+      meta: {
+        user_agent: data.meta.user_agent,
+        positionEligibility: data.positionEligibility,
+        personalInfo: data.personalInfo,
+        cdlInfo: data.cdlInfo,
+        drivingExperience: data.drivingExperience,
+        employmentHistory: data.employmentHistory,
+        accidentHistory: data.accidentHistory,
+        trafficViolations: data.trafficViolations,
+        duiHistory: data.duiHistory,
+        dotDrugAlcohol: data.dotDrugAlcohol,
+        backgroundCheck: data.backgroundCheck,
+        workPreferences: data.workPreferences,
+        emergencyContact: data.emergencyContact,
+        cultureFit: data.cultureFit,
+        attachments: data.attachments,
+        certification: data.certification,
+      },
     });
 
     // TODO: append to Sheets, send owner notifications via Resend, auto-reply to applicant
