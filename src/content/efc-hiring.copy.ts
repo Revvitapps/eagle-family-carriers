@@ -18,7 +18,6 @@ export const copy = {
       { label: "Story", href: "#story" },
       { label: "Bonuses", href: "#bonuses" },
       { label: "Schedules", href: "#schedule" },
-      { label: "Family", href: "#culture" },
       { label: "Routes", href: "#routes" },
       { label: "Apply", href: "#apply" },
     ],
@@ -50,8 +49,8 @@ export const copy = {
     },
     {
       icon: "layout",
-      title: "Paid bonuses",
-      body: "Safety, fuel, and on-time bonuses plus clean DOT payouts.",
+      title: "Hiring and referral bonuses",
+      body: "Safety, fuel, on-time, hiring, and referral bonuses — plus clean DOT payouts.",
     },
   ],
 
@@ -94,10 +93,9 @@ export const copy = {
       },
       endorsements: {
         label: "Endorsements",
-        help: "Select all that apply.",
+        help: "Select all endorsements you currently hold. T = Doubles/Triples (FedEx Ground), H = Hazmat, X = Tank + Hazmat. Leave blank if none.",
         options: [
-          { value: "T", label: "T — Double/Triple" },
-          { value: "N", label: "N — Tank" },
+          { value: "T", label: "T — Doubles/Triples (FedEx Ground)" },
           { value: "H", label: "H — Hazmat" },
           { value: "X", label: "X — Tank + Hazmat" },
         ],
@@ -194,6 +192,7 @@ export const copy = {
         summary: "Solo routes with steady miles, protected weekend resets, and paid safety/on-time bonuses.",
         bullets: [
           "Hagerstown-based regional and long-haul loops",
+          "Home daily with 5-day work week",
           "Home every weekend or weekly, depending on lane",
           "Mileage or load-based pay plus safety/fuel bonuses",
         ],
@@ -203,9 +202,9 @@ export const copy = {
         isTeam: true,
         title: "Teams Driver — Full-Time Class A CDL",
         payRange: "$1,500–$2,300 weekly",
-        summary: "Team lanes with higher earning potential, protected resets, and quick onboarding for qualified partners.",
+        summary: "Team lanes for long and regional hauls offering higher earning potential and quick onboarding for qualified partners.",
         bullets: [
-          "Team-focused lanes out of Hagerstown, MD",
+          "Team lanes for long and regional hauls offering higher earning potential and quick onboarding for qualified partners.",
           "Weekly home time with predictable resets",
           "Mileage or load-based pay plus clean DOT payouts and team bonuses",
         ],
@@ -219,8 +218,8 @@ export const copy = {
       location: {
         heading: "Location",
         bullets: [
-          "Based in Hagerstown, Maryland — open to local and regional routes.",
-          "Long-haul and company driver opportunities available.",
+          "Company driver positions based in Hagerstown, MD.",
+          "Hiring formed teams or team members for long-haul and regional opportunities, and solo drivers for local regional runs.",
         ],
       },
       employment: {
@@ -236,7 +235,7 @@ export const copy = {
         bullets: [
           "Competitive mileage or load-based pay aligned to route mix.",
           "Quarterly safety, fuel, and on-time bonuses.",
-          "Clean DOT inspections paid the same week.",
+          "Clean QVI inspections paid the same week.",
         ],
       },
       responsibilities: {
@@ -293,7 +292,7 @@ export const copy = {
         {
           title: "Safety + performance",
           points: [
-            "Quarterly safety and fuel bonuses up to $3,000.",
+            "Quarterly safety and fuel bonuses.",
             "On-time streak rewards with no cap.",
             "Clean DOT inspections paid the same week.",
           ],
@@ -322,9 +321,8 @@ export const copy = {
       body: "You choose the cadence; we protect it. Our planners and dispatchers lock in your week so you can plan real life around it.",
       bullets: [
         "Team lanes with predictable miles and protected reset windows.",
-        "Home-every-weekend options or 3-on/1-off rotations for long hauls.",
+        "Home daily or weekly based upon route.",
         "No last-minute swaps — your dispatcher locks your plan mid-week.",
-        "Access to top-load customers that keep you rolling without deadhead.",
       ],
     },
 
@@ -337,8 +335,8 @@ export const copy = {
         "Support when it matters — wellness checks, hotel support, and human recruiters.",
       ],
       quote: {
-        text: "The best of the best stay because we treat them like pros and family at the same time.",
-        attribution: "Mara K., Director of Recruiting",
+        text: "We ride along, stay close to the work, and make sure every driver feels backed by leadership.",
+        attribution: "Paul E., Owner",
       },
     },
 
@@ -354,9 +352,9 @@ export const copy = {
       heading: "Routes & lanes",
       body: "Primary freight runs out of Hagerstown with regional loops and select long-haul lanes. See the running map and typical resets.",
       bullets: [
-        "Regional loops: Northeast and Mid-Atlantic with weekend resets.",
-        "Long haul: Midwest and Southeast rotations with planned layovers.",
-        "No forced dispatch; routes locked mid-week to protect your plan.",
+        "Regional solo loops: Mid-Atlantic with weekend resets.",
+        "Long haul team: Southeast, Midwest, and Southwest with weekly resets.",
+        "Routes confirmed weekly.",
       ],
       ctaLabel: "View running lanes map",
       ctaHref: "https://www.google.com/maps/place/Hagerstown,+MD",

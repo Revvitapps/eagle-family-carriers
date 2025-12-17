@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { copy } from "@/content/efc-hiring.copy";
 import { DriverApplicationForm } from "./driver-application-form";
+import { BulletDot } from "./bullet-dot";
 
 export default function PositionPage({ positionSlug }: { positionSlug: string }) {
   const position =
@@ -89,7 +90,7 @@ function InfoCard({ title, items, cta }: { title: string; items: string[]; cta?:
       <ul className="mt-3 space-y-2 text-sm text-slate-100/85">
         {items.map((item) => (
           <li key={item} className="flex items-start gap-2">
-            <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+            <BulletDot />
             <span>{item}</span>
           </li>
         ))}

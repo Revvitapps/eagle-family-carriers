@@ -65,7 +65,13 @@ export const applicantSchema = z
     personalInfo: z.object({
       fullName: z.string().min(1, "Full legal name is required"),
       dob: z.string().min(1, "Date of birth required"),
-      ssnLast4: z.string().min(4, "Last 4 SSN required").max(4, "Use last 4"),
+      fedexId: z
+        .string()
+        .trim()
+        .min(4, "Enter your FedEx ID or leave this blank.")
+        .max(12, "FedEx ID seems too long.")
+        .optional()
+        .or(z.literal("")),
       phone: z.string().min(7, "Enter a valid phone"),
       email: z.string().email("Enter a valid email"),
       currentAddress: z.object({
@@ -104,7 +110,7 @@ export const applicantSchema = z
       licenseNumber: z.string().min(1, "License number required"),
       issuingState: z.string().length(2, "State must be 2 letters"),
       expirationDate: z.string().min(1, "Expiration date required"),
-      endorsements: z.array(z.enum(["T", "N", "H", "X"])).optional(),
+      endorsements: z.array(z.enum(["T", "H", "X"])).optional(),
       cdlValidUnrestricted: yesNo,
       cdlRestrictionExplanation: z.string().optional(),
       dotMedicalValid: yesNo,

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { copy } from "@/content/efc-hiring.copy";
 import { Bolt, FileText, Globe2, LayoutPanelTop } from "lucide-react";
 import Image from "next/image";
+import { BulletDot } from "@/components/bullet-dot";
 
 const icons = {
   file: FileText,
@@ -148,7 +149,7 @@ export default function Home() {
             <ul className="mt-3 space-y-2 text-sm text-slate-100/85">
               {copy.sections.role.applySteps.bullets.map((item) => (
                 <li key={item} className="flex items-start gap-2">
-                  <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+                  <BulletDot />
                   <span>{item}</span>
                 </li>
               ))}
@@ -198,7 +199,7 @@ export default function Home() {
                 <ul className="mt-3 space-y-2 text-sm text-slate-100/85">
                   {position.bullets.map((item) => (
                     <li key={item} className="flex items-start gap-2">
-                      <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+                      <BulletDot />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -224,11 +225,11 @@ export default function Home() {
 
         {/* Quick highlights */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 reveal">
-          {copy.features.map((item) => {
-            const Icon = icons[item.icon as keyof typeof icons];
-            return (
-              <div
-                key={item.title}
+            {copy.features.map((item) => {
+              const Icon = icons[item.icon as keyof typeof icons];
+              return (
+                <div
+                  key={item.title}
                 className="rounded-xl border border-white/15 bg-white/10 p-4 shadow-lg shadow-black/30 backdrop-blur-xl"
               >
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-white/10 text-cyan-200">
@@ -292,7 +293,7 @@ export default function Home() {
                 <ul className="mt-3 space-y-2 text-sm text-slate-100/85">
                   {card.points.map((point) => (
                     <li key={point} className="flex items-start gap-2">
-                      <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+                      <BulletDot />
                       <span>{point}</span>
                     </li>
                   ))}
@@ -319,7 +320,7 @@ export default function Home() {
           <ul className="mt-4 space-y-2 text-sm text-slate-100/85">
             {copy.sections.schedule.bullets.map((item) => (
               <li key={item} className="flex items-start gap-2 rounded-xl border border-white/10 bg-black/40 px-4 py-3 shadow-inner shadow-black/20">
-                <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+                <BulletDot />
                 <span>{item}</span>
               </li>
             ))}
@@ -348,54 +349,12 @@ export default function Home() {
           <ul className="mt-4 space-y-2 text-sm text-slate-100/85">
             {copy.sections.routes.bullets.map((item) => (
               <li key={item} className="flex items-start gap-2 rounded-xl border border-white/10 bg-black/40 px-4 py-3 shadow-inner shadow-black/20">
-                <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+                <BulletDot />
                 <span>{item}</span>
               </li>
             ))}
           </ul>
         </section>
-
-        {/* Culture */}
-        <section
-          id="culture"
-          className="rounded-3xl border border-white/15 bg-white/10 p-8 shadow-xl shadow-black/30 backdrop-blur-xl sm:p-12 reveal"
-        >
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-2xl font-semibold tracking-tight text-white drop-shadow">{copy.sections.culture.heading}</h2>
-              <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-cyan-100">
-                Family environment
-              </span>
-            </div>
-            <p className="max-w-3xl text-sm text-slate-100/85">{copy.sections.culture.body}</p>
-            <div className="grid gap-3 md:grid-cols-3">
-              {copy.sections.culture.pillars.map((pillar) => (
-                <div key={pillar} className="rounded-2xl border border-white/15 bg-black/45 px-4 py-3 shadow-lg shadow-black/25 backdrop-blur">
-                  <p className="text-sm text-slate-100/90">{pillar}</p>
-                </div>
-              ))}
-            </div>
-            <div className="rounded-2xl border border-white/15 bg-gradient-to-r from-white/10 to-white/5 px-4 py-4 shadow-inner shadow-black/30">
-              <p className="text-base font-medium text-white">“{copy.sections.culture.quote.text}”</p>
-              <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-200/70">{copy.sections.culture.quote.attribution}</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Included */}
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-8 shadow-xl shadow-black/30 backdrop-blur-xl reveal">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-xl font-semibold tracking-tight text-white">{copy.included.heading}</h2>
-          </div>
-          <ul className="mt-4 grid gap-2 text-sm text-slate-200/85 sm:grid-cols-2">
-            {copy.included.bullets.map((item) => (
-              <li key={item} className="inline-flex items-start gap-2">
-                <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
 
         {/* Apply */}
         <section
@@ -409,7 +368,7 @@ export default function Home() {
                 <ul className="mt-2 space-y-1 text-xs text-slate-100/80">
                 {copy.sections.role.applySteps.bullets.map((item) => (
                   <li key={item} className="flex items-start gap-2">
-                    <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-cyan-300/80 shadow-[0_0_10px_rgba(34,211,238,0.7)]" />
+                    <BulletDot />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -484,7 +443,7 @@ function CardBlock({ title, items }: { title: string; items: string[] }) {
       <ul className="mt-3 space-y-2 text-sm text-slate-100/85">
         {items.map((item) => (
           <li key={item} className="flex items-start gap-2">
-            <span className="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300/80 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+            <BulletDot />
             <span>{item}</span>
           </li>
         ))}

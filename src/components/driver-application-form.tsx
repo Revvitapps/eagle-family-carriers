@@ -4,9 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
+import { useRef } from "react";
 
 const stateOptions = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY",
+];
+
+const endorsementOptions = [
+  { value: "T", label: "T — Doubles/Triples (FedEx Ground)" },
+  { value: "H", label: "H — Hazmat" },
+  { value: "X", label: "X — Tank + Hazmat" },
 ];
 
 type DriverApplicationFormProps = {
@@ -17,12 +24,13 @@ type DriverApplicationFormProps = {
 export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam = false }: DriverApplicationFormProps) {
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [currentStep, setCurrentStep] = useState(0);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const defaultValues = useMemo<ApplicantInput>(() => ({
     personalInfo: {
       fullName: "",
       dob: "",
-      ssnLast4: "",
+      fedexId: "",
       phone: "",
       email: "",
       currentAddress: {
@@ -212,8 +220,16 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
     }
   }, [errors]);
 
+  useEffect(() => {
+    const el = formRef.current;
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 16;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  }, [currentStep]);
+
   return (
-    <div className="rounded-3xl border border-white/15 bg-white/5 p-6 shadow-2xl shadow-black/40 backdrop-blur">
+    <div ref={formRef} className="rounded-3xl border border-white/15 bg-white/5 p-6 shadow-2xl shadow-black/40 backdrop-blur">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-cyan-100">Step {currentStep + 1} of {steps.length}</p>
@@ -232,7 +248,10 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
               <div className="grid gap-3 md:grid-cols-2">
                 <Field label="Full legal name" required error={errors.personalInfo?.fullName?.message} {...register("personalInfo.fullName")} />
                 <Field label="Date of birth" type="date" required error={errors.personalInfo?.dob?.message} {...register("personalInfo.dob")} />
-                <Field label="Last 4 SSN" required error={errors.personalInfo?.ssnLast4?.message} {...register("personalInfo.ssnLast4")} />
+                <div className="space-y-1">
+                  <Field label="FedEx ID (if you already have one)" placeholder="Optional" error={errors.personalInfo?.fedexId?.message} {...register("personalInfo.fedexId")} />
+                  <p className="text-xs text-slate-200/80">Helps us confirm eligibility quickly; leave blank if you do not have one yet.</p>
+                </div>
                 <Field label="Mobile phone" required error={errors.personalInfo?.phone?.message} {...register("personalInfo.phone")} />
                 <Field label="Email" type="email" required error={errors.personalInfo?.email?.message} {...register("personalInfo.email")} />
               </div>
@@ -318,13 +337,16 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
                 <Field label="If no, explain" error={errors.cdlInfo?.cdlRestrictionExplanation?.message} {...register("cdlInfo.cdlRestrictionExplanation")} />
               </div>
               <div className="flex flex-wrap gap-3 text-sm">
-                {["T", "N", "H", "X"].map((endorsement) => (
-                  <label key={endorsement} className="flex items-center gap-2">
-                    <input type="checkbox" value={endorsement} {...register("cdlInfo.endorsements")} />
-                    <span>Endorsement {endorsement}</span>
+                {endorsementOptions.map((endorsement) => (
+                  <label key={endorsement.value} className="flex items-center gap-2">
+                    <input type="checkbox" value={endorsement.value} {...register("cdlInfo.endorsements")} />
+                    <span>{endorsement.label}</span>
                   </label>
                 ))}
               </div>
+              <p className="text-xs text-slate-200/80">
+                Select all that apply. T = Doubles/Triples (FedEx Ground), H = Hazmat, X = Tank + Hazmat. Leave blank if none.
+              </p>
               <div className="grid gap-3 md:grid-cols-2">
                 <Select label="Current DOT medical card valid?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} error={errors.cdlInfo?.dotMedicalValid?.message} {...register("cdlInfo.dotMedicalValid")} />
                 <Field label="DOT medical expiration" type="date" error={errors.cdlInfo?.dotMedicalExpiration?.message} {...register("cdlInfo.dotMedicalExpiration")} />
