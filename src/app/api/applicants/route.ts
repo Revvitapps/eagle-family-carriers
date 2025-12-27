@@ -101,6 +101,16 @@ async function sendApplicationEmail(data: ApplicantData) {
     return false;
   }
 
+  const recipients = to
+    .split(",")
+    .map((address) => address.trim())
+    .filter(Boolean);
+
+  if (recipients.length === 0) {
+    console.warn("EMAIL_TO contained no valid recipients; skipping email.");
+    return false;
+  }
+
   const subject = `New driver application: ${data.personalInfo.fullName}`;
   const text = buildApplicationEmailText(data);
 
@@ -112,7 +122,7 @@ async function sendApplicationEmail(data: ApplicantData) {
     },
     body: JSON.stringify({
       from,
-      to: [to],
+      to: recipients,
       subject,
       text,
     }),
