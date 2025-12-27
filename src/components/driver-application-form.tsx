@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
 import { useRef } from "react";
@@ -25,6 +25,10 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [currentStep, setCurrentStep] = useState(0);
   const formRef = useRef<HTMLDivElement>(null);
+  const dobMax = useMemo(() => {
+    const today = new Date();
+    return formatDateInput(new Date(today.getFullYear() - 21, today.getMonth(), today.getDate()));
+  }, []);
 
   const defaultValues = useMemo<ApplicantInput>(() => ({
     personalInfo: {
@@ -185,6 +189,77 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
     { id: "attachments", title: "Attachments & Signature", description: "Optional uploads and final certification" },
   ];
 
+  const stepFields: Record<string, FieldPath<ApplicantInput>[]> = {
+    personal: [
+      "personalInfo.fullName",
+      "personalInfo.dob",
+      "personalInfo.phone",
+      "personalInfo.email",
+      "personalInfo.currentAddress.street",
+      "personalInfo.currentAddress.city",
+      "personalInfo.currentAddress.state",
+      "personalInfo.currentAddress.zip",
+      "personalInfo.currentAddress.yearsAtAddress",
+      "personalInfo.currentAddress.monthsAtAddress",
+      "personalInfo.previousAddresses",
+      "positionEligibility.positionAppliedFor",
+      "positionEligibility.employmentType",
+      "positionEligibility.availableStartDate",
+      "positionEligibility.authorizedToWorkUS",
+      "positionEligibility.is21OrOlder",
+      "positionEligibility.priorEmploymentWithEagle.hasWorkedHereBefore",
+      "positionEligibility.priorEmploymentWithEagle.when",
+      "positionEligibility.priorEmploymentWithEagle.position",
+      "positionEligibility.teamPartner.name",
+      "positionEligibility.teamPartner.phone",
+      "positionEligibility.teamPartner.email",
+    ],
+    cdl: [
+      "cdlInfo.licenseType",
+      "cdlInfo.licenseNumber",
+      "cdlInfo.issuingState",
+      "cdlInfo.expirationDate",
+      "cdlInfo.cdlValidUnrestricted",
+      "cdlInfo.cdlRestrictionExplanation",
+      "cdlInfo.dotMedicalValid",
+      "cdlInfo.dotMedicalExpiration",
+      "cdlInfo.licenseDeniedHistory.hasBeenDenied",
+      "cdlInfo.licenseDeniedHistory.explanation",
+      "cdlInfo.licenseSuspendedHistory.hasBeenSuspendedOrRevoked",
+      "cdlInfo.licenseSuspendedHistory.explanation",
+      "drivingExperience.totalYearsCdlA",
+      "drivingExperience.equipmentExperience",
+    ],
+    employment: [
+      "employmentHistory.employers",
+      "employmentHistory.certifyLast3YearsListed",
+      "employmentHistory.certifyLast10YearsDrivingListed",
+      "accidentHistory",
+      "trafficViolations",
+      "duiHistory.hasDuiOrRefusal",
+      "duiHistory.details",
+      "dotDrugAlcohol.positiveOrRefusedLast2Years",
+      "dotDrugAlcohol.positiveOrRefusedDetails",
+      "dotDrugAlcohol.currentDotDisqualification",
+      "dotDrugAlcohol.disqualificationDetails",
+      "dotDrugAlcohol.consentDrugTesting",
+      "dotDrugAlcohol.consentHistoryRelease",
+      "backgroundCheck.consentBackgroundInvestigation",
+      "backgroundCheck.consentEmployerRecordRelease",
+    ],
+    preferences: [
+      "emergencyContact.name",
+      "emergencyContact.relationship",
+      "emergencyContact.phone",
+    ],
+    attachments: [
+      "certification.signatureName",
+      "certification.signatureDate",
+      "certification.certificationTextAccepted",
+      "certification.signatureConsentCheckbox",
+    ],
+  };
+
   const onSubmit = async (values: ApplicantInput) => {
     setStatus("loading");
     const res = await fetch("/api/applicants", {
@@ -206,10 +281,15 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
     reader.readAsDataURL(file);
   };
 
-  const goNext = () => setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
-  const goPrev = () => setCurrentStep((s) => Math.max(s - 1, 0));
-
   const currentStepId = steps[currentStep].id;
+
+  const goNext = async () => {
+    const fields = stepFields[currentStepId] ?? [];
+    const ok = await form.trigger(fields, { shouldFocus: true });
+    if (!ok) return;
+    setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+  };
+  const goPrev = () => setCurrentStep((s) => Math.max(s - 1, 0));
 
   // Scroll to first error on submit failure
   useEffect(() => {
@@ -247,7 +327,7 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
             <Section title="Personal information">
               <div className="grid gap-3 md:grid-cols-2">
                 <Field label="Full legal name" required error={errors.personalInfo?.fullName?.message} {...register("personalInfo.fullName")} />
-                <Field label="Date of birth" type="date" required error={errors.personalInfo?.dob?.message} {...register("personalInfo.dob")} />
+                <Field label="Date of birth" type="date" max={dobMax} required error={errors.personalInfo?.dob?.message} {...register("personalInfo.dob")} />
                 <div className="space-y-1">
                   <Field label="FedEx ID (if you already have one)" placeholder="Optional" error={errors.personalInfo?.fedexId?.message} {...register("personalInfo.fedexId")} />
                   <p className="text-xs text-slate-200/80">Helps us confirm eligibility quickly; leave blank if you do not have one yet.</p>
@@ -619,6 +699,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <div className="mt-3 space-y-3">{children}</div>
     </div>
   );
+}
+
+function formatDateInput(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 const Field = ({ label, error, required, ...rest }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; required?: boolean }) => (
