@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   icons: {
     icon: "/efc-crest.jpeg",
   },
+  openGraph: {
+    images: [
+      {
+        url: "/efc-crest.jpeg",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    images: ["/efc-crest.jpeg"],
+  },
 };
 
 export default function RootLayout({

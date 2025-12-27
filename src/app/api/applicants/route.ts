@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { applicants } from "@/db/schema";
-import { applicantSchema } from "@/lib/validation";
-
-export const runtime = "edge";
+import { applicantSchema, type ApplicantData } from "@/lib/validation";
 
 export async function POST(req: Request) {
   try {
@@ -71,8 +69,13 @@ export async function POST(req: Request) {
       },
     });
 
-    // TODO: append to Sheets, send owner notifications via Resend, auto-reply to applicant
-    return NextResponse.json({ ok: true });
+    const emailSent = await sendApplicationEmail(data).catch((err) => {
+      console.error("Resend email failed", err);
+      return false;
+    });
+
+    // TODO: append to Sheets, auto-reply to applicant
+    return NextResponse.json({ ok: true, emailSent });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ ok: false }, { status: 500 });
@@ -86,4 +89,60 @@ async function hashIP(input: string) {
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
+}
+
+async function sendApplicationEmail(data: ApplicantData) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.EMAIL_FROM;
+  const to = process.env.EMAIL_TO;
+
+  if (!apiKey || !from || !to) {
+    console.warn("Missing RESEND_API_KEY/EMAIL_FROM/EMAIL_TO env vars; skipping email.");
+    return false;
+  }
+
+  const subject = `New driver application: ${data.personalInfo.fullName}`;
+  const text = buildApplicationEmailText(data);
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Resend request failed (${response.status}) ${detail}`.trim());
+  }
+
+  return true;
+}
+
+function buildApplicationEmailText(data: ApplicantData) {
+  const lines = [
+    "New application received",
+    "",
+    `Name: ${data.personalInfo.fullName}`,
+    `Email: ${data.personalInfo.email}`,
+    `Phone: ${data.personalInfo.phone}`,
+    `City/State: ${data.personalInfo.currentAddress.city}, ${data.personalInfo.currentAddress.state}`,
+    `Position: ${data.positionEligibility.positionAppliedFor}`,
+    `Employment type: ${data.positionEligibility.employmentType}`,
+    `Available start: ${data.positionEligibility.availableStartDate}`,
+    `CDL: ${data.cdlInfo.licenseType} (${data.cdlInfo.issuingState})`,
+    `Years CDL-A: ${data.drivingExperience.totalYearsCdlA}`,
+    `Endorsements: ${data.cdlInfo.endorsements?.join(", ") || "None"}`,
+    `Team partner: ${data.positionEligibility.teamPartner?.name || "None"}`,
+    `Source: ${data.meta.source || "Direct"}`,
+  ];
+
+  return lines.join("\n");
 }
