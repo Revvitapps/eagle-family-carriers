@@ -76,20 +76,6 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
     },
     drivingExperience: {
       totalYearsCdlA: 0,
-      equipmentExperience: [
-        {
-          equipmentType: "",
-          years: 0,
-          months: 0,
-          avgMilesPerWeek: undefined,
-          regions: "",
-          linehaul: false,
-          local: false,
-          nightDriving: false,
-          mountainRoutes: false,
-          majorCarriers: "",
-        },
-      ],
     },
     employmentHistory: {
       employers: [
@@ -177,16 +163,17 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
   } = form;
   // eslint-disable-next-line react-hooks/incompatible-library
   const employmentType = watch("positionEligibility.employmentType");
+  const is21OrOlder = watch("positionEligibility.is21OrOlder");
+  const workedHereBefore = watch("positionEligibility.priorEmploymentWithEagle.hasWorkedHereBefore");
 
   const previousAddresses = useFieldArray({ control, name: "personalInfo.previousAddresses" });
-  const equipmentExperience = useFieldArray({ control, name: "drivingExperience.equipmentExperience" });
   const employers = useFieldArray({ control, name: "employmentHistory.employers" });
   const accidents = useFieldArray({ control, name: "accidentHistory" });
   const violations = useFieldArray({ control, name: "trafficViolations" });
 
   const steps = [
     { id: "personal", title: "Personal & Eligibility", description: "Identity, address history, and work authorization" },
-    { id: "cdl", title: "CDL & Experience", description: "License details, medical card, and equipment experience" },
+    { id: "cdl", title: "CDL & Experience", description: "License details, medical card, and experience" },
     { id: "employment", title: "Employment & Safety", description: "Work history, accidents, violations, DOT questions" },
     { id: "preferences", title: "Preferences & Contact", description: "Route preferences, emergency contact, culture" },
     { id: "attachments", title: "Attachments & Signature", description: "Optional uploads and final certification" },
@@ -232,7 +219,6 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
       "cdlInfo.licenseSuspendedHistory.hasBeenSuspendedOrRevoked",
       "cdlInfo.licenseSuspendedHistory.explanation",
       "drivingExperience.totalYearsCdlA",
-      "drivingExperience.equipmentExperience",
     ],
     employment: [
       "employmentHistory.employers",
@@ -394,12 +380,16 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
                 <Field label="Available start date" type="date" required error={errors.positionEligibility?.availableStartDate?.message} {...register("positionEligibility.availableStartDate")} />
                 <Select label="Authorized to work in U.S.?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} error={errors.positionEligibility?.authorizedToWorkUS?.message} {...register("positionEligibility.authorizedToWorkUS")} />
                 <Select label="At least 21 years old?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} error={errors.positionEligibility?.is21OrOlder?.message} {...register("positionEligibility.is21OrOlder")} />
-                {watch("positionEligibility.is21OrOlder") === "no" && (
-                  <Field label="If no, when will you turn 21?" type="date" error={errors.positionEligibility?.turns21Date?.message} {...register("positionEligibility.turns21Date")} />
+                {is21OrOlder === "no" && (
+                  <Field label="If no, then when?" type="date" error={errors.positionEligibility?.turns21Date?.message} {...register("positionEligibility.turns21Date")} />
                 )}
                 <Select label="Worked for Eagle Family Carriers before?" required options={[{ label: "No", value: "no" }, { label: "Yes", value: "yes" }]} error={errors.positionEligibility?.priorEmploymentWithEagle?.hasWorkedHereBefore?.message} {...register("positionEligibility.priorEmploymentWithEagle.hasWorkedHereBefore")} />
-                <Field label="If yes, when?" error={errors.positionEligibility?.priorEmploymentWithEagle?.when?.message} {...register("positionEligibility.priorEmploymentWithEagle.when")} />
-                <Field label="If yes, position?" error={errors.positionEligibility?.priorEmploymentWithEagle?.position?.message} {...register("positionEligibility.priorEmploymentWithEagle.position")} />
+                {workedHereBefore === "yes" && (
+                  <>
+                    <Field label="If yes, when?" error={errors.positionEligibility?.priorEmploymentWithEagle?.when?.message} {...register("positionEligibility.priorEmploymentWithEagle.when")} />
+                    <Field label="If yes, position?" error={errors.positionEligibility?.priorEmploymentWithEagle?.position?.message} {...register("positionEligibility.priorEmploymentWithEagle.position")} />
+                  </>
+                )}
               </div>
               {employmentType === "team" && (
                 <div className="mt-3 grid gap-3 rounded-xl border border-white/10 bg-black/15 p-3 md:grid-cols-3">
@@ -448,41 +438,16 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
 
             <Section title="Driving experience">
               <div className="grid gap-3 md:grid-cols-3">
-                <Field label="Total years CDL-A" type="number" required error={errors.drivingExperience?.totalYearsCdlA?.message} {...register("drivingExperience.totalYearsCdlA", { valueAsNumber: true })} />
-              </div>
-              <div className="space-y-3">
-                {equipmentExperience.fields.map((field, idx) => (
-                  <div key={field.id} className="grid gap-3 rounded-xl border border-white/10 bg-black/20 p-3 md:grid-cols-3">
-                    <Field label="Equipment type" required {...register(`drivingExperience.equipmentExperience.${idx}.equipmentType` as const)} />
-                    <Field label="Years" type="number" required {...register(`drivingExperience.equipmentExperience.${idx}.years` as const, { valueAsNumber: true })} />
-                    <Field label="Months" type="number" required {...register(`drivingExperience.equipmentExperience.${idx}.months` as const, { valueAsNumber: true })} />
-                    <Field label="Avg miles/week" type="number" {...register(`drivingExperience.equipmentExperience.${idx}.avgMilesPerWeek` as const, { valueAsNumber: true })} />
-                    <Field label="Regions operated" {...register(`drivingExperience.equipmentExperience.${idx}.regions` as const)} />
-                    <Field label="Major carriers (FedEx/UPS/Amazon/etc.)" {...register(`drivingExperience.equipmentExperience.${idx}.majorCarriers` as const)} />
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" {...register(`drivingExperience.equipmentExperience.${idx}.linehaul` as const)} />
-                      <span>Linehaul</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" {...register(`drivingExperience.equipmentExperience.${idx}.local` as const)} />
-                      <span>Local/P&D</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" {...register(`drivingExperience.equipmentExperience.${idx}.nightDriving` as const)} />
-                      <span>Night driving</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" {...register(`drivingExperience.equipmentExperience.${idx}.mountainRoutes` as const)} />
-                      <span>Mountain routes</span>
-                    </label>
-                    <button type="button" className="text-left text-xs text-red-300 underline" onClick={() => equipmentExperience.remove(idx)}>
-                      Remove equipment
-                    </button>
-                  </div>
-                ))}
-                <button type="button" className="text-sm text-cyan-200 underline" onClick={() => equipmentExperience.append({ equipmentType: "", years: 0, months: 0, avgMilesPerWeek: undefined, regions: "", linehaul: false, local: false, nightDriving: false, mountainRoutes: false, majorCarriers: "" })}>
-                  + Add equipment type
-                </button>
+                <div className="space-y-1">
+                  <Field
+                    label="Years driving tractor-trailer (CDL-A)"
+                    type="number"
+                    required
+                    error={errors.drivingExperience?.totalYearsCdlA?.message}
+                    {...register("drivingExperience.totalYearsCdlA", { valueAsNumber: true })}
+                  />
+                  <p className="text-xs text-slate-200/80">Minimum 2 years required.</p>
+                </div>
               </div>
             </Section>
           </div>
@@ -747,15 +712,37 @@ function formatDateInput(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
-const Field = ({ label, error, required, ...rest }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; required?: boolean }) => (
-  <label className="block text-sm text-slate-100/90">
-    <span className="mb-1 block font-medium text-white">
-      {label} {required ? "*" : ""}
-    </span>
-    <input className="mt-1 w-full rounded border border-white/15 bg-black/30 px-3 py-2 text-white" data-error={Boolean(error)} {...rest} />
-    {error && <p className="text-xs text-destructive">{error}</p>}
-  </label>
-);
+function Field({
+  label,
+  error,
+  required,
+  ...rest
+}: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; required?: boolean }) {
+  const isDate = rest.type === "date";
+  const handleClick: React.MouseEventHandler<HTMLInputElement> = (event) => {
+    rest.onClick?.(event);
+    if (!isDate) return;
+    const target = event.currentTarget as HTMLInputElement & { showPicker?: () => void };
+    if (typeof target.showPicker === "function") {
+      target.showPicker();
+    }
+  };
+
+  return (
+    <label className="block text-sm text-slate-100/90">
+      <span className="mb-1 block font-medium text-white">
+        {label} {required ? "*" : ""}
+      </span>
+      <input
+        className="mt-1 w-full rounded border border-white/15 bg-black/30 px-3 py-2 text-white"
+        data-error={Boolean(error)}
+        {...rest}
+        onClick={isDate ? handleClick : rest.onClick}
+      />
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </label>
+  );
+}
 
 function Select({
   label,

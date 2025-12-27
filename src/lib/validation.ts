@@ -57,19 +57,6 @@ const violationSchema = z.object({
   disposition: z.string().optional(),
 });
 
-const equipmentSchema = z.object({
-  equipmentType: z.string().min(1, "Equipment type required"),
-  years: z.number().min(0).default(0),
-  months: z.number().min(0).max(11).default(0),
-  avgMilesPerWeek: z.number().min(0).optional(),
-  regions: z.string().optional(),
-  linehaul: z.boolean().optional(),
-  local: z.boolean().optional(),
-  nightDriving: z.boolean().optional(),
-  mountainRoutes: z.boolean().optional(),
-  majorCarriers: z.string().optional(),
-});
-
 export const applicantSchema = z
   .object({
     personalInfo: z.object({
@@ -137,8 +124,7 @@ export const applicantSchema = z
     }),
 
     drivingExperience: z.object({
-      totalYearsCdlA: z.number().min(0, "Years required"),
-      equipmentExperience: z.array(equipmentSchema).min(1, "Add at least one equipment experience"),
+      totalYearsCdlA: z.number().min(2, "Must have at least 2 years"),
     }),
 
     employmentHistory: z.object({
