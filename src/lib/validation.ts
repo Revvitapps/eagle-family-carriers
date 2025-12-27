@@ -17,11 +17,21 @@ const employerSchema = z.object({
   state: z.string().length(2, "State must be 2 letters"),
   phone: z.string().min(7, "Phone required"),
   startDate: z.string().min(1, "Start date required"),
-  endDate: z.string().min(1, "End date required"),
+  endDate: z.string().optional(),
+  currentlyEmployed: z.boolean().optional(),
   position: z.string().min(1, "Position required"),
   dotSafetySensitive: yesNo,
   reasonForLeaving: z.string().min(1, "Reason required"),
   mayContact: yesNo,
+}).superRefine((data, ctx) => {
+  const endDate = data.endDate?.trim();
+  if (!data.currentlyEmployed && !endDate) {
+    ctx.addIssue({
+      code: "custom",
+      message: "End date required unless current employer",
+      path: ["endDate"],
+    });
+  }
 });
 
 const accidentSchema = z.object({
@@ -91,6 +101,7 @@ export const applicantSchema = z
       availableStartDate: z.string().min(1, "Start date required"),
       authorizedToWorkUS: yesNo,
       is21OrOlder: yesNo,
+      turns21Date: z.string().optional(),
       priorEmploymentWithEagle: z.object({
         hasWorkedHereBefore: yesNo,
         when: z.string().optional(),
@@ -269,6 +280,13 @@ export const applicantSchema = z
     }
     if (data.duiHistory.hasDuiOrRefusal === "yes" && !data.duiHistory.details) {
       ctx.addIssue({ code: "custom", message: "Provide DUI/refusal details", path: ["duiHistory", "details"] });
+    }
+    if (data.positionEligibility.is21OrOlder === "no" && !data.positionEligibility.turns21Date) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Provide the date you turn 21",
+        path: ["positionEligibility", "turns21Date"],
+      });
     }
     if (data.dotDrugAlcohol.positiveOrRefusedLast2Years === "yes" && !data.dotDrugAlcohol.positiveOrRefusedDetails) {
       ctx.addIssue({

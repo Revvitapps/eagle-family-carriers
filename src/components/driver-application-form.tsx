@@ -53,6 +53,7 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
       availableStartDate: "",
       authorizedToWorkUS: "yes",
       is21OrOlder: "yes",
+      turns21Date: "",
       priorEmploymentWithEagle: {
         hasWorkedHereBefore: "no",
         when: "",
@@ -99,6 +100,7 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
           phone: "",
           startDate: "",
           endDate: "",
+          currentlyEmployed: false,
           position: "",
           dotSafetySensitive: "yes",
           reasonForLeaving: "",
@@ -162,6 +164,7 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
     resolver: zodResolver(applicantSchema),
     defaultValues,
     mode: "onBlur",
+    shouldUnregister: false,
   });
 
   const {
@@ -207,6 +210,7 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
       "positionEligibility.availableStartDate",
       "positionEligibility.authorizedToWorkUS",
       "positionEligibility.is21OrOlder",
+      "positionEligibility.turns21Date",
       "positionEligibility.priorEmploymentWithEagle.hasWorkedHereBefore",
       "positionEligibility.priorEmploymentWithEagle.when",
       "positionEligibility.priorEmploymentWithEagle.position",
@@ -390,6 +394,9 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
                 <Field label="Available start date" type="date" required error={errors.positionEligibility?.availableStartDate?.message} {...register("positionEligibility.availableStartDate")} />
                 <Select label="Authorized to work in U.S.?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} error={errors.positionEligibility?.authorizedToWorkUS?.message} {...register("positionEligibility.authorizedToWorkUS")} />
                 <Select label="At least 21 years old?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} error={errors.positionEligibility?.is21OrOlder?.message} {...register("positionEligibility.is21OrOlder")} />
+                {watch("positionEligibility.is21OrOlder") === "no" && (
+                  <Field label="If no, when will you turn 21?" type="date" error={errors.positionEligibility?.turns21Date?.message} {...register("positionEligibility.turns21Date")} />
+                )}
                 <Select label="Worked for Eagle Family Carriers before?" required options={[{ label: "No", value: "no" }, { label: "Yes", value: "yes" }]} error={errors.positionEligibility?.priorEmploymentWithEagle?.hasWorkedHereBefore?.message} {...register("positionEligibility.priorEmploymentWithEagle.hasWorkedHereBefore")} />
                 <Field label="If yes, when?" error={errors.positionEligibility?.priorEmploymentWithEagle?.when?.message} {...register("positionEligibility.priorEmploymentWithEagle.when")} />
                 <Field label="If yes, position?" error={errors.positionEligibility?.priorEmploymentWithEagle?.position?.message} {...register("positionEligibility.priorEmploymentWithEagle.position")} />
@@ -485,24 +492,56 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
           <div className="space-y-4">
             <Section title="Employment history (last 3 years, driving last 10)">
               <div className="space-y-3">
-                {employers.fields.map((field, idx) => (
-                  <div key={field.id} className="grid gap-3 rounded-xl border border-white/10 bg-black/20 p-3 md:grid-cols-3">
-                    <Field label="Employer name" required {...register(`employmentHistory.employers.${idx}.name` as const)} />
-                    <Field label="City" required {...register(`employmentHistory.employers.${idx}.city` as const)} />
-                    <Select label="State" required options={stateOptions} {...register(`employmentHistory.employers.${idx}.state` as const)} />
-                    <Field label="Employer phone" required {...register(`employmentHistory.employers.${idx}.phone` as const)} />
-                    <Field label="Start date" type="date" required {...register(`employmentHistory.employers.${idx}.startDate` as const)} />
-                    <Field label="End date (or Present)" type="date" required {...register(`employmentHistory.employers.${idx}.endDate` as const)} />
-                    <Field label="Position held" required {...register(`employmentHistory.employers.${idx}.position` as const)} />
-                    <Select label="DOT/safety-sensitive driving?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} {...register(`employmentHistory.employers.${idx}.dotSafetySensitive` as const)} />
-                    <Field label="Reason for leaving" required {...register(`employmentHistory.employers.${idx}.reasonForLeaving` as const)} />
-                    <Select label="May we contact this employer?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} {...register(`employmentHistory.employers.${idx}.mayContact` as const)} />
-                    <button type="button" className="text-left text-xs text-red-300 underline" onClick={() => employers.remove(idx)}>
-                      Remove employer
-                    </button>
-                  </div>
-                ))}
-                <button type="button" className="text-sm text-cyan-200 underline" onClick={() => employers.append({ name: "", city: "", state: "", phone: "", startDate: "", endDate: "", position: "", dotSafetySensitive: "yes", reasonForLeaving: "", mayContact: "yes" })}>
+                {employers.fields.map((field, idx) => {
+                  const isCurrent = watch(`employmentHistory.employers.${idx}.currentlyEmployed` as const);
+                  return (
+                    <div key={field.id} className="grid gap-3 rounded-xl border border-white/10 bg-black/20 p-3 md:grid-cols-3">
+                      <Field label="Employer name" required {...register(`employmentHistory.employers.${idx}.name` as const)} />
+                      <Field label="City" required {...register(`employmentHistory.employers.${idx}.city` as const)} />
+                      <Select label="State" required options={stateOptions} {...register(`employmentHistory.employers.${idx}.state` as const)} />
+                      <Field label="Employer phone" required {...register(`employmentHistory.employers.${idx}.phone` as const)} />
+                      <Field label="Start date" type="date" required {...register(`employmentHistory.employers.${idx}.startDate` as const)} />
+                      <Field
+                        label="End date"
+                        type="date"
+                        required={!isCurrent}
+                        disabled={isCurrent}
+                        error={errors.employmentHistory?.employers?.[idx]?.endDate?.message}
+                        {...register(`employmentHistory.employers.${idx}.endDate` as const)}
+                      />
+                      <label className="flex items-center gap-2 text-sm">
+                        <input type="checkbox" {...register(`employmentHistory.employers.${idx}.currentlyEmployed` as const)} />
+                        <span>Current employer</span>
+                      </label>
+                      <Field label="Position held" required {...register(`employmentHistory.employers.${idx}.position` as const)} />
+                      <Select label="DOT/safety-sensitive driving?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} {...register(`employmentHistory.employers.${idx}.dotSafetySensitive` as const)} />
+                      <Field label="Reason for leaving" required {...register(`employmentHistory.employers.${idx}.reasonForLeaving` as const)} />
+                      <Select label="May we contact this employer?" required options={[{ label: "Yes", value: "yes" }, { label: "No", value: "no" }]} {...register(`employmentHistory.employers.${idx}.mayContact` as const)} />
+                      <button type="button" className="text-left text-xs text-red-300 underline" onClick={() => employers.remove(idx)}>
+                        Remove employer
+                      </button>
+                    </div>
+                  );
+                })}
+                <button
+                  type="button"
+                  className="text-sm text-cyan-200 underline"
+                  onClick={() =>
+                    employers.append({
+                      name: "",
+                      city: "",
+                      state: "",
+                      phone: "",
+                      startDate: "",
+                      endDate: "",
+                      currentlyEmployed: false,
+                      position: "",
+                      dotSafetySensitive: "yes",
+                      reasonForLeaving: "",
+                      mayContact: "yes",
+                    })
+                  }
+                >
                   + Add employer
                 </button>
               </div>
