@@ -267,20 +267,20 @@ export const copy = {
           "Click “Start Application” to complete the short form (about 5 minutes).",
           "Confirm you meet the required qualifications above before starting.",
           "We review within 24 hours and contact qualified drivers for a quick interview.",
-          "Prefer to talk first? Email hiring@eaglefamilycarriers.com.",
+          "Prefer to talk first? Email support@eaglefamilycarriers.com.",
         ],
       },
     },
 
     story: {
-      ribbon: "25 YEARS ON THE ROAD",
+      ribbon: "55+ YEARS EXPERIENCE ON THE ROAD",
       heading: "Family-run and built to last",
       body:
-        "Eagle Family Carriers started in 1999 with one truck and a promise to treat drivers like partners. We still operate that way: steady freight, reliable miles, and leadership that rides along to stay close to the work.",
+        "Eagle Family Carriers companies started in 2019 with two trucks and a promise to treat drivers like partners. We still operate that way: steady freight, reliable miles, and leadership that rides along to stay close to the work.",
       stats: [
-        { label: "Years in operation", value: "25+" },
+        { label: "Years experience in leadership", value: "55+" },
         { label: "Average driver tenure", value: "8.4 yrs" },
-        { label: "Active team drivers", value: "145" },
+        { label: "Active team drivers", value: "22" },
         { label: "Safety performance", value: "CSA top 10%" },
       ],
     },
