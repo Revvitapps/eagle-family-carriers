@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { BarChart3, DownloadCloud, ShieldCheck, Upload } from "lucide-react";
 
 const kpis = [
@@ -75,6 +75,11 @@ export default function AdminDashboard() {
   const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({});
   const [receivedCaptures, setReceivedCaptures] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [uploadHistory, setUploadHistory] = useState<
+    { name: string; target: string; status: string; when: string }[]
+  >([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -142,6 +147,15 @@ export default function AdminDashboard() {
           ...prev,
           [target]: payload.message ?? "Upload recorded",
         }));
+        setUploadHistory((prev) => [
+          {
+            name: file.name,
+            target,
+            status: payload.message ?? "Upload recorded",
+            when: new Date().toLocaleString(),
+          },
+          ...prev,
+        ]);
       } else {
         setUploadStatus((prev) => ({
           ...prev,
@@ -162,6 +176,18 @@ export default function AdminDashboard() {
 
   const [selectedView, setSelectedView] = useState(viewModes[0].id);
   const contentLocked = !isAuthenticated;
+  const hasUploadData = uploadHistory.length > 0;
+  const displayKpis = useMemo(
+    () =>
+      hasUploadData
+        ? kpis
+        : kpis.map((stat) => ({
+            ...stat,
+            value: "-",
+            change: "Waiting on uploads…",
+          })),
+    [hasUploadData],
+  );
 
   return (
     <div className="min-h-screen px-4 py-12 text-slate-50">
@@ -231,7 +257,7 @@ export default function AdminDashboard() {
         <div className="relative">
           <div className={`space-y-10 ${contentLocked ? "pointer-events-none blur-sm" : ""}`}>
             <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {kpis.map((stat) => (
+          {displayKpis.map((stat) => (
             <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-white shadow-lg shadow-black/40 backdrop-blur">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
               <p className="mt-3 text-3xl font-semibold">{stat.value}</p>
@@ -264,6 +290,28 @@ export default function AdminDashboard() {
             </div>
           </div>
           <p className="text-xs text-slate-400">{viewModes.find((mode) => mode.id === selectedView)?.hint}</p>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+              From
+              <input
+                type="date"
+                className="ml-2 w-40 rounded-md border border-white/20 bg-black/40 px-3 py-1 text-xs text-slate-100"
+                value={startDate}
+                onChange={(event) => setStartDate(event.target.value)}
+              />
+            </label>
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+              To
+              <input
+                type="date"
+                className="ml-2 w-40 rounded-md border border-white/20 bg-black/40 px-3 py-1 text-xs text-slate-100"
+                value={endDate}
+                onChange={(event) => setEndDate(event.target.value)}
+              />
+            </label>
+            <span className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Date filters will light up once data is available.</span>
+          </div>
 
           {selectedView === "summary" && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -353,6 +401,32 @@ export default function AdminDashboard() {
                 ))}
               </div>
             </div>
+          )}
+        </section>
+
+        <section className="rounded-3xl border border-cyan-500/20 bg-black/40 p-5 shadow-xl shadow-cyan-900/30">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">Recent uploads</h3>
+            <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
+              {uploadHistory.length} records
+            </span>
+          </div>
+          {uploadHistory.length === 0 ? (
+            <p className="mt-3 text-xs text-slate-400">No uploads yet. Drop any CSV, PDF, or XLS to start collecting data.</p>
+          ) : (
+            <ul className="mt-3 space-y-2 text-sm text-slate-100">
+              {uploadHistory.slice(0, 5).map((entry, idx) => (
+                <li key={`${entry.name}-${idx}`} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 px-4 py-2 shadow-lg shadow-black/20">
+                  <div>
+                    <p className="font-semibold">{entry.name}</p>
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                      {entry.target} • {entry.when}
+                    </p>
+                  </div>
+                  <span className="text-[11px] text-emerald-300">{entry.status}</span>
+                </li>
+              ))}
+            </ul>
           )}
         </section>
 
