@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "EFC Admin Helper",
+  "version": "0.1.0",
+  "description": "Screenshots and navigation helpers for admin.eaglefamilycarriers.com",
+  "host_permissions": [
+    "https://admin.eaglefamilycarriers.com/*"
+  ],
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://admin.eaglefamilycarriers.com/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EFC Admin Helper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #050b18;
+        color: #f4f6ff;
+        min-width: 240px;
+      }
+      .wrapper {
+        padding: 12px;
+      }
+      button {
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        background: linear-gradient(90deg, #10b981, #6366f1);
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
+      }
+      small {
+        display: block;
+        margin-top: 8px;
+        color: #a5b4fc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>EFC Admin Helper</h1>
+      <button id="capture">Capture Quick Notes</button>
+      <small>Only works on admin.eaglefamilycarriers.com</small>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
