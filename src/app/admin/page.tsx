@@ -74,6 +74,7 @@ export default function AdminDashboard() {
   const [authMessage, setAuthMessage] = useState("");
   const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({});
   const [receivedCaptures, setReceivedCaptures] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -112,6 +113,7 @@ export default function AdminDashboard() {
       if (response.ok) {
         setAuthStatus("success");
         setAuthMessage("Access granted — encrypted session created.");
+        setIsAuthenticated(true);
       } else {
         const json = await response.json().catch(() => ({}));
         setAuthStatus("error");
@@ -152,6 +154,7 @@ export default function AdminDashboard() {
   };
 
   const [selectedView, setSelectedView] = useState(viewModes[0].id);
+  const contentLocked = !isAuthenticated;
 
   return (
     <div className="min-h-screen px-4 py-12 text-slate-50">
@@ -218,7 +221,9 @@ export default function AdminDashboard() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="relative">
+          <div className={`space-y-10 ${contentLocked ? "pointer-events-none blur-sm" : ""}`}>
+            <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {kpis.map((stat) => (
             <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-white shadow-lg shadow-black/40 backdrop-blur">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
@@ -598,6 +603,17 @@ export default function AdminDashboard() {
             </button>
           </div>
         </section>
+          </div>
+          {contentLocked && (
+            <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/10 bg-gradient-to-b from-black/80 via-black/90 to-black/95 text-center text-slate-200">
+              <div className="mx-auto mt-24 max-w-sm space-y-3">
+                <p className="text-xs uppercase tracking-[0.4em] text-amber-300">Content locked</p>
+                <h2 className="text-2xl font-semibold text-white">Authenticate to reveal the dashboard</h2>
+                <p className="text-sm text-slate-300">Everything beyond the login is intentionally concealed until you unlock it.</p>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
