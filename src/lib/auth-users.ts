@@ -20,7 +20,7 @@ const parseEnvArray = (key?: string): AuthUserEntry[] => {
         username: String(entry.username).trim(),
         passwordHash: String(entry.passwordHash).trim(),
         roles: Array.isArray(entry.roles)
-          ? entry.roles.map((role) => String(role).trim().toLowerCase())
+          ? entry.roles.map((role: unknown) => String(role).trim().toLowerCase())
           : undefined,
       }));
   } catch (error) {
