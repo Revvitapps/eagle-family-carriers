@@ -555,7 +555,7 @@ export default function AdminDashboard() {
                       <input
                         id={inputId}
                         type="file"
-                        accept=".csv"
+                        accept="*/*"
                         className="hidden"
                         onChange={(event) => handleUpload(target.name, event.target.files?.[0])}
                       />
