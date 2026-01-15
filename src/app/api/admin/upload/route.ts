@@ -27,13 +27,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Missing upload data" }, { status: 400 });
   }
 
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const blobPath = `uploads/${sanitizePath(target)}/${Date.now()}-${sanitizePath(file.name)}`;
-  const { url } = await put(blobPath, buffer, {
-    access: "public",
-    contentType: file.type || "application/octet-stream",
-  });
+  let blobUrl: string | undefined;
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const blobPath = `uploads/${sanitizePath(target)}/${Date.now()}-${sanitizePath(file.name)}`;
+    const result = await put(blobPath, buffer, {
+      access: "public",
+      contentType: file.type || "application/octet-stream",
+    });
+    blobUrl = result.url;
+  } catch (error) {
+    console.error("Blob upload failed", error);
+    return NextResponse.json({ message: "Upload failed before storing blob" }, { status: 504 });
+  }
+
+  if (!blobUrl) {
+    return NextResponse.json({ message: "Blob upload did not return a URL" }, { status: 500 });
+  }
 
   if (neonClient) {
     await ensureUploadSchema();
@@ -42,7 +53,7 @@ export async function POST(req: Request) {
     INSERT INTO uploads (target, filename, size, blob_url)
     VALUES ($1, $2, $3, $4);
   `,
-      [target, file.name, file.size, url],
+      [target, file.name, file.size, blobUrl],
     );
   }
 
@@ -56,6 +67,6 @@ export async function POST(req: Request) {
   return NextResponse.json({
     message: "Upload recorded",
     total: uploadStore.length,
-    blobUrl: url,
+    blobUrl,
   });
 }
