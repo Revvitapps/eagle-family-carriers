@@ -29,14 +29,14 @@ export async function POST(req: Request) {
 
   let blobUrl: string | undefined;
   try {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const blobPath = `uploads/${sanitizePath(target)}/${Date.now()}-${sanitizePath(file.name)}`;
-    const result = await put(blobPath, buffer, {
-      access: "public",
-      contentType: file.type || "application/octet-stream",
-    });
-    blobUrl = result.url;
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const blobPath = `uploads/${sanitizePath(target)}/${Date.now()}-${sanitizePath(file.name)}`;
+  const result = await put(blobPath, buffer, {
+    access: "public",
+    contentType: file.type || "application/octet-stream",
+  });
+  blobUrl = result.url;
   } catch (error) {
     console.error("Blob upload failed", error);
     return NextResponse.json({ message: "Upload failed before storing blob" }, { status: 504 });
@@ -47,14 +47,33 @@ export async function POST(req: Request) {
   }
 
   if (neonClient) {
-    await ensureUploadSchema();
-    await neonClient.query(
-      `
+    const timeout = (label: string) =>
+      new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error(`${label} timed out`)), 20000);
+      });
+
+    try {
+      await Promise.race([ensureUploadSchema(), timeout("ensureUploadSchema")]);
+    } catch (error) {
+      console.error("Schema ready failed", error);
+    }
+
+    try {
+      await Promise.race(
+        [
+          neonClient.query(
+            `
     INSERT INTO uploads (target, filename, size, blob_url)
     VALUES ($1, $2, $3, $4);
   `,
-      [target, file.name, file.size, blobUrl],
-    );
+            [target, file.name, file.size, blobUrl],
+          ),
+          timeout("neon insert"),
+        ],
+      );
+    } catch (error) {
+      console.error("Neon insert failed", error);
+    }
   }
 
   uploadStore.push({
