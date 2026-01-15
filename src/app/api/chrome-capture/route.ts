@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ensureCaptureSchema, neonClient } from "@/lib/neon";
 
 type ChromeCapturePayload = {
   url: string;
@@ -25,6 +26,13 @@ export async function POST(req: Request) {
     if (!payload.url || !payload.timestamp) {
       return NextResponse.json({ message: "Invalid capture" }, { status: 400 });
     }
+
+    await ensureCaptureSchema();
+    await neonClient.sql`
+      INSERT INTO chrome_captures (url, title, timestamp)
+      VALUES (${payload.url}, ${payload.title ?? ""}, ${payload.timestamp});
+    `;
+
     captureStore.push({ ...payload, receivedAt: new Date().toISOString() });
     return NextResponse.json({ message: "Captured", total: captureStore.length });
   } catch {
