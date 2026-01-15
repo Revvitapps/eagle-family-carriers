@@ -41,6 +41,34 @@ const uploadTargets = [
   { name: "Motive Events", clue: "Read-only ingest", icon: ShieldCheck },
 ];
 
+const viewModes = [
+  { id: "summary", label: "Summary tiles", hint: "Lean into totals & ROI" },
+  { id: "lanes", label: "Lane table", hint: "See fuel/rate by route" },
+  { id: "actions", label: "Savings actions", hint: "Recommended interventions" },
+  { id: "trend", label: "Trend view", hint: "Fuel vs. miles growth" },
+];
+
+const laneInsights = [
+  { route: "Durham ↔ Columbus", avgFuel: "1.91", compliance: "78%", savings: "$0.12/gal", priority: "High" },
+  { route: "Durham ↔ Atlanta", avgFuel: "1.82", compliance: "85%", savings: "$0.08/gal", priority: "Mid" },
+  { route: "Durham ↔ Chicago", avgFuel: "2.07", compliance: "69%", savings: "$0.18/gal", priority: "High" },
+  { route: "Durham ↔ Virginia", avgFuel: "1.74", compliance: "92%", savings: "$0.05/gal", priority: "Low" },
+];
+
+const actionIdeas = [
+  "Push Chrome watcher alerts to drivers on lane Chicago to reduce $0.18/gal gap",
+  "Re-route 3 loads through Love's overnight to keep compliance above 85%",
+  "Automate the CSV ingestion on Monday so reloads mirror weekly FedEx sheets",
+  "Highlight idle reduction opportunities near Atlanta with the idle heatmap",
+];
+
+const trendPoints = [
+  { label: "Week 1", miles: 890, fuel: 365 },
+  { label: "Week 2", miles: 942, fuel: 371 },
+  { label: "Week 3", miles: 980, fuel: 382 },
+  { label: "Week 4", miles: 1025, fuel: 389 },
+];
+
 export default function AdminDashboard() {
   const [authStatus, setAuthStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [authMessage, setAuthMessage] = useState("");
@@ -123,15 +151,20 @@ export default function AdminDashboard() {
     }, 600);
   };
 
+  const [selectedView, setSelectedView] = useState(viewModes[0].id);
+
   return (
     <div className="min-h-screen px-4 py-12 text-slate-50">
       <main className="mx-auto flex max-w-6xl flex-col gap-10 rounded-3xl border border-white/20 bg-black/60 p-8 shadow-2xl shadow-black/60 backdrop-blur">
         <section className="space-y-3">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-100/80">Admin Console</p>
-          <h1 className="text-4xl font-semibold text-white">Fuel Guidance Pilot</h1>
+          <div className="flex items-center gap-3">
+            <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Fuel Ops Console</p>
+            <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] text-amber-200 uppercase tracking-[0.3em]">beta</span>
+          </div>
+          <h1 className="text-4xl font-semibold text-white">Owner dashboard (in progress)</h1>
           <p className="max-w-3xl text-sm text-slate-200/80">
-            Weekly savings actions, route-aware fuel insights, and chrome load watching all feed into this
-            password-protected owner dashboard. CSV uploads + API feeds keep Neon/Postgres data fresh.
+            Monitor fuel spend, compliance, and capture trends with placeholder widgets while we finish the last 30% of the build.
+            Upload CSVs or stream Chrome captures and we will keep the Neon/Postgres data synced.
           </p>
         </section>
 
@@ -177,7 +210,7 @@ export default function AdminDashboard() {
             <p className="text-xs uppercase tracking-[0.4em] text-slate-300/70">Pilot Status</p>
             <div className="mt-3 flex items-center gap-3 text-sm">
               <span className="h-4 w-4 rounded-full bg-emerald-400" />
-              <span>Active | 90-day Fuel Guidance pilot</span>
+              <span>Active | Fuel ops beta</span>
             </div>
             <p className="mt-4 text-sm text-slate-100/80">
               Neon/Postgres ready, Vercel blob set, and weekly top-5 actions email queued.
@@ -193,6 +226,122 @@ export default function AdminDashboard() {
               <p className="mt-1 text-xs text-slate-200/70">{stat.change}</p>
             </div>
           ))}
+        </section>
+
+        <section className="space-y-5 rounded-3xl border border-white/10 bg-black/50 p-6 shadow-xl shadow-black/50">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">View builder (70% done)</p>
+              <h2 className="text-2xl font-semibold text-white">Rotate the data however you like</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {viewModes.map((mode) => (
+                <button
+                  key={mode.id}
+                  type="button"
+                  onClick={() => setSelectedView(mode.id)}
+                  className={`rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400 ${
+                    selectedView === mode.id
+                      ? "border-cyan-300 bg-cyan-500/20 text-cyan-200"
+                      : "border-white/15 bg-white/5 text-white/80 hover:border-cyan-400 hover:text-white"
+                  }`}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="text-xs text-slate-400">{viewModes.find((mode) => mode.id === selectedView)?.hint}</p>
+
+          {selectedView === "summary" && (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {kpis.map((stat) => (
+                <div key={`view-${stat.label}`} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-white shadow-lg shadow-black/40">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
+                  <p className="mt-3 text-3xl font-semibold">{stat.value}</p>
+                  <p className="mt-1 text-xs text-slate-200/70">{stat.change}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {selectedView === "lanes" && (
+            <div className="rounded-2xl border border-white/10 bg-white/5 text-sm text-slate-200 shadow-lg shadow-black/40">
+              <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2 px-4 py-3 text-xs uppercase tracking-[0.3em] text-slate-400">
+                <span>Route</span>
+                <span>Fuel</span>
+                <span>Compliance</span>
+                <span>Savings</span>
+                <span>Priority</span>
+              </div>
+              <div className="divide-y divide-white/10">
+                {laneInsights.map((lane) => (
+                  <div key={lane.route} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-2 px-4 py-3">
+                    <p className="text-white">{lane.route}</p>
+                    <p className="text-cyan-200">{lane.avgFuel}</p>
+                    <p className="text-slate-300">{lane.compliance}</p>
+                    <p className="text-emerald-300">{lane.savings}</p>
+                    <p
+                      className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] ${
+                        lane.priority === "High"
+                          ? "bg-rose-500/20 text-rose-200"
+                          : lane.priority === "Mid"
+                          ? "bg-amber-500/20 text-amber-200"
+                          : "bg-emerald-500/20 text-emerald-200"
+                      }`}
+                    >
+                      {lane.priority}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedView === "actions" && (
+            <div className="space-y-3 text-sm text-slate-100">
+              {actionIdeas.map((idea, idx) => (
+                <div key={idea} className="rounded-2xl border border-white/10 bg-black/40 p-4 shadow-lg shadow-black/30">
+                  <p className="text-xs font-semibold text-cyan-200">Action #{idx + 1}</p>
+                  <p className="mt-1 text-sm text-white">{idea}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {selectedView === "trend" && (
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/60 to-black/60 p-5 shadow-lg shadow-black/40">
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-slate-400">
+                <span>Miles</span>
+                <span>Fuel</span>
+              </div>
+              <div className="mt-4 grid gap-4">
+                {trendPoints.map((point) => (
+                  <div key={point.label} className="flex items-center gap-3 text-sm text-slate-100">
+                    <span className="w-16 text-xs uppercase tracking-[0.3em] text-slate-400">{point.label}</span>
+                    <div className="flex-1 space-y-1">
+                      <div className="h-2 rounded-full bg-white/10">
+                        <div
+                          className="h-2 rounded-full bg-cyan-400"
+                          style={{ width: `${(point.miles / 1050) * 100}%` }}
+                        />
+                      </div>
+                      <div className="h-2 rounded-full bg-white/10">
+                        <div
+                          className="h-2 rounded-full bg-emerald-400"
+                          style={{ width: `${(point.fuel / 390) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="text-right text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                      <div>{point.miles} mi</div>
+                      <div className="text-emerald-300">{point.fuel} gal</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
@@ -251,6 +400,122 @@ export default function AdminDashboard() {
               </li>
             </ul>
           </div>
+        </section>
+
+        <section className="space-y-5 rounded-3xl border border-white/10 bg-black/50 p-6 shadow-xl shadow-black/50">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Multi-view engine</p>
+              <h2 className="text-2xl font-semibold text-white">Your data, every angle</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {viewModes.map((mode) => (
+                <button
+                  key={mode.id}
+                  type="button"
+                  onClick={() => setSelectedView(mode.id)}
+                  className={`rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] transition ${
+                    selectedView === mode.id
+                      ? "border-cyan-300 bg-cyan-500/20 text-cyan-200"
+                      : "border-white/15 bg-white/5 text-white/80 hover:border-cyan-400 hover:text-white"
+                  }`}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="text-xs text-slate-400">{viewModes.find((mode) => mode.id === selectedView)?.hint}</p>
+
+          {selectedView === "summary" && (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {kpis.map((stat) => (
+                <div key={`view-${stat.label}`} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-white shadow-lg shadow-black/40">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
+                  <p className="mt-3 text-3xl font-semibold">{stat.value}</p>
+                  <p className="mt-1 text-xs text-slate-200/70">{stat.change}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {selectedView === "lanes" && (
+            <div className="rounded-2xl border border-white/10 bg-white/5 text-sm text-slate-200 shadow-lg shadow-black/40">
+              <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2 px-4 py-3 text-xs uppercase tracking-[0.3em] text-slate-400">
+                <span>Route</span>
+                <span>Fuel</span>
+                <span>Compliance</span>
+                <span>Savings</span>
+                <span>Priority</span>
+              </div>
+              <div className="divide-y divide-white/10">
+                {laneInsights.map((lane) => (
+                  <div key={lane.route} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-2 px-4 py-3">
+                    <p className="text-white">{lane.route}</p>
+                    <p className="text-cyan-200">{lane.avgFuel}</p>
+                    <p className="text-slate-300">{lane.compliance}</p>
+                    <p className="text-emerald-300">{lane.savings}</p>
+                    <p
+                      className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] ${
+                        lane.priority === "High"
+                          ? "bg-rose-500/20 text-rose-200"
+                          : lane.priority === "Mid"
+                          ? "bg-amber-500/20 text-amber-200"
+                          : "bg-emerald-500/20 text-emerald-200"
+                      }`}
+                    >
+                      {lane.priority}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedView === "actions" && (
+            <div className="space-y-3 text-sm text-slate-100">
+              {actionIdeas.map((idea, idx) => (
+                <div key={idea} className="rounded-2xl border border-white/10 bg-black/40 p-4 shadow-lg shadow-black/30">
+                  <p className="text-xs font-semibold text-cyan-200">Action #{idx + 1}</p>
+                  <p className="mt-1 text-sm text-white">{idea}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {selectedView === "trend" && (
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/60 to-black/60 p-5 shadow-lg shadow-black/40">
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-slate-400">
+                <span>Miles</span>
+                <span>Fuel</span>
+              </div>
+              <div className="mt-4 grid gap-4">
+                {trendPoints.map((point) => (
+                  <div key={point.label} className="flex items-center gap-3 text-sm text-slate-100">
+                    <span className="w-16 text-xs uppercase tracking-[0.3em] text-slate-400">{point.label}</span>
+                    <div className="flex-1 space-y-1">
+                      <div className="h-2 rounded-full bg-white/10">
+                        <div
+                          className="h-2 rounded-full bg-cyan-400"
+                          style={{ width: `${(point.miles / 1050) * 100}%` }}
+                        />
+                      </div>
+                      <div className="h-2 rounded-full bg-white/10">
+                        <div
+                          className="h-2 rounded-full bg-emerald-400"
+                          style={{ width: `${(point.fuel / 390) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="text-right text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                      <div>{point.miles} mi</div>
+                      <div className="text-emerald-300">{point.fuel} gal</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
