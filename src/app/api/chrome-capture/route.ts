@@ -27,11 +27,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Invalid capture" }, { status: 400 });
     }
 
-    await ensureCaptureSchema();
-    await neonClient.sql`
+    if (neonClient) {
+      await ensureCaptureSchema();
+      await neonClient.query(
+        `
       INSERT INTO chrome_captures (url, title, timestamp)
-      VALUES (${payload.url}, ${payload.title ?? ""}, ${payload.timestamp});
-    `;
+      VALUES ($1, $2, $3);
+    `,
+        [payload.url, payload.title ?? "", payload.timestamp],
+      );
+    }
 
     captureStore.push({ ...payload, receivedAt: new Date().toISOString() });
     return NextResponse.json({ message: "Captured", total: captureStore.length });
