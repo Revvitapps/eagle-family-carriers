@@ -136,10 +136,17 @@ export default function AdminDashboard() {
         method: "POST",
         body: formData,
       });
+      const payload = await response.json().catch(() => ({}));
       if (response.ok) {
-        setUploadStatus((prev) => ({ ...prev, [target]: "Upload recorded" }));
+        setUploadStatus((prev) => ({
+          ...prev,
+          [target]: payload.message ?? "Upload recorded",
+        }));
       } else {
-        setUploadStatus((prev) => ({ ...prev, [target]: "Upload failed" }));
+        setUploadStatus((prev) => ({
+          ...prev,
+          [target]: payload.message ?? "Upload failed",
+        }));
       }
     } catch {
       setUploadStatus((prev) => ({ ...prev, [target]: "Upload failed" }));
