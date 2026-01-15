@@ -27,11 +27,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Missing upload data" }, { status: 400 });
   }
 
-  const loweredName = file.name.toLowerCase();
-  if (!loweredName.endsWith(".csv")) {
-    return NextResponse.json({ message: "Only CSV uploads are allowed" }, { status: 400 });
-  }
-
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const blobPath = `uploads/${sanitizePath(target)}/${Date.now()}-${sanitizePath(file.name)}`;
