@@ -10,12 +10,12 @@
     "hash-admin-password": "node scripts/hash-admin-password.cjs"
   },
   "dependencies": {
-    "papaparse": "^5.4.1",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
+    "@vercel/analytics": "^1.6.1",
     "@vercel/blob": "^2.0.0",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
@@ -23,6 +23,7 @@
     "drizzle-orm": "^0.44.7",
     "lucide-react": "^0.553.0",
     "next": "^16.1.1",
+    "papaparse": "^5.4.1",
     "pg": "^8.16.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -32,9 +33,9 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/papaparse": "^5.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/papaparse": "^5.2.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
