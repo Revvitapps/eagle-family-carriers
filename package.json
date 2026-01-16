@@ -10,6 +10,7 @@
     "hash-admin-password": "node scripts/hash-admin-password.cjs"
   },
   "dependencies": {
+    "papaparse": "^5.4.1",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-label": "^2.1.8",
@@ -31,6 +32,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@types/papaparse": "^5.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,14 +1,63 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { BarChart3, DownloadCloud, ShieldCheck, Upload } from "lucide-react";
 
-const kpis = [
-  { label: "Total ROI", value: "$48.6K", change: "+18% vs last month" },
-  { label: "Fuel Cost", value: "$132.4K", change: "1.2% lower vs plan" },
-  { label: "Fuel Saved", value: "42,700 Gal", change: "+3.4% efficiency" },
-  { label: "Idle Time", value: "87 hrs", change: "-12% month-to-date" },
+const defaultKpiStats = [
+  { label: "Trips processed", value: "-", change: "Upload a CSV to populate metrics" },
+  { label: "Total miles", value: "-", change: "Awaiting data" },
+  { label: "Fuel spend", value: "-", change: "Upload to compute cost" },
+  { label: "Revenue pool", value: "-", change: "Revenue metrics will appear after ingest" },
 ];
+
+type DashboardMetrics = {
+  tripCount: number;
+  totalMiles: number;
+  totalFuelSpend: number;
+  totalPay: number;
+  uploadCount: number;
+  lastUpload: string | null;
+};
+
+const formatNumber = (value: number, maximumFractionDigits = 0) =>
+  new Intl.NumberFormat("en-US", { maximumFractionDigits }).format(value);
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+
+const buildMetricKpis = (metrics: DashboardMetrics) => {
+  const roi = metrics.totalPay - metrics.totalFuelSpend;
+  const avgFuelRate =
+    metrics.totalMiles > 0 ? metrics.totalFuelSpend / metrics.totalMiles : 0;
+  const avgRate =
+    metrics.totalMiles > 0 ? metrics.totalPay / metrics.totalMiles : 0;
+  const lastUploadLabel = metrics.lastUpload
+    ? `Last upload ${new Date(metrics.lastUpload).toLocaleString()}`
+    : "Awaiting first upload";
+
+  return [
+    { label: "Trips processed", value: formatNumber(metrics.tripCount), change: lastUploadLabel },
+    {
+      label: "Total miles",
+      value: `${formatNumber(metrics.totalMiles)} mi`,
+      change: `Avg. rate ${formatCurrency(avgRate)} /mi`,
+    },
+    {
+      label: "Fuel spend",
+      value: formatCurrency(metrics.totalFuelSpend),
+      change: `Avg. $${avgFuelRate.toFixed(3)} per mile`,
+    },
+    {
+      label: "Revenue pool",
+      value: formatCurrency(metrics.totalPay),
+      change: `ROI ${formatCurrency(roi)}`,
+    },
+  ];
+};
 
 const focusAreas = [
   {
@@ -80,6 +129,8 @@ export default function AdminDashboard() {
   >([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [metricsLoading, setMetricsLoading] = useState(false);
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -99,6 +150,25 @@ export default function AdminDashboard() {
     window.addEventListener("efcAdminCapture", listener as EventListener);
     return () => window.removeEventListener("efcAdminCapture", listener as EventListener);
   }, []);
+
+  const fetchMetrics = useCallback(async () => {
+    setMetricsLoading(true);
+    try {
+      const response = await fetch("/api/admin/metrics");
+      if (response.ok) {
+        const json = (await response.json()) as DashboardMetrics;
+        setMetrics(json);
+      }
+    } catch (error) {
+      console.error("Unable to refresh metrics", error);
+    } finally {
+      setMetricsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchMetrics();
+  }, [fetchMetrics]);
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -156,6 +226,7 @@ export default function AdminDashboard() {
           },
           ...prev,
         ]);
+        await fetchMetrics();
       } else {
         setUploadStatus((prev) => ({
           ...prev,
@@ -176,18 +247,13 @@ export default function AdminDashboard() {
 
   const [selectedView, setSelectedView] = useState(viewModes[0].id);
   const contentLocked = !isAuthenticated;
-  const hasUploadData = uploadHistory.length > 0;
-  const displayKpis = useMemo(
-    () =>
-      hasUploadData
-        ? kpis
-        : kpis.map((stat) => ({
-            ...stat,
-            value: "-",
-            change: "Waiting on uploads…",
-          })),
-    [hasUploadData],
-  );
+  const hasUploadData = Boolean(metrics?.tripCount);
+  const displayKpis = useMemo(() => {
+    if (hasUploadData && metrics) {
+      return buildMetricKpis(metrics);
+    }
+    return defaultKpiStats;
+  }, [hasUploadData, metrics]);
 
   return (
     <div className="min-h-screen px-4 py-12 text-slate-50">
@@ -250,6 +316,13 @@ export default function AdminDashboard() {
             </div>
             <p className="mt-4 text-sm text-slate-100/80">
               Neon/Postgres ready, Vercel blob set, and weekly top-5 actions email queued.
+            </p>
+            <p className="mt-3 text-xs text-slate-400">
+              {metricsLoading
+                ? "Refreshing metrics…"
+                : metrics?.uploadCount
+                ? `${metrics.uploadCount} upload${metrics.uploadCount === 1 ? "" : "s"} recorded`
+                : "Waiting on initial upload"}
             </p>
           </div>
         </section>
@@ -315,7 +388,7 @@ export default function AdminDashboard() {
 
           {selectedView === "summary" && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {kpis.map((stat) => (
+              {displayKpis.map((stat) => (
                 <div key={`view-${stat.label}`} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-white shadow-lg shadow-black/40">
                   <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
                   <p className="mt-3 text-3xl font-semibold">{stat.value}</p>
@@ -515,7 +588,7 @@ export default function AdminDashboard() {
 
           {selectedView === "summary" && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {kpis.map((stat) => (
+              {displayKpis.map((stat) => (
                 <div key={`view-${stat.label}`} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-white shadow-lg shadow-black/40">
                   <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
                   <p className="mt-3 text-3xl font-semibold">{stat.value}</p>
