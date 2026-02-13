@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFieldArray, useForm, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
-import { useRef } from "react";
 
 const stateOptions = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY",
@@ -22,6 +22,7 @@ type DriverApplicationFormProps = {
 };
 
 export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam = false }: DriverApplicationFormProps) {
+  const router = useRouter();
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [currentStep, setCurrentStep] = useState(0);
   const formRef = useRef<HTMLDivElement>(null);
@@ -251,13 +252,22 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
   };
 
   const onSubmit = async (values: ApplicantInput) => {
-    setStatus("loading");
-    const res = await fetch("/api/applicants", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    setStatus(res.ok ? "ok" : "error");
+    try {
+      setStatus("loading");
+      const res = await fetch("/api/applicants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      if (res.ok) {
+        setStatus("ok");
+        router.push("/thank-you");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   };
 
   const handleFileCapture = (field: keyof ApplicantInput["attachments"]) => async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -311,7 +321,22 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit, (validationErrors) => {
+        console.log("[v0] Form validation errors:", JSON.stringify(validationErrors, null, 2));
+        // Find which step has the first error and navigate there
+        const errorPaths = Object.keys(validationErrors);
+        const stepEntries = Object.entries(stepFields);
+        for (let i = 0; i < stepEntries.length; i++) {
+          const [, fields] = stepEntries[i];
+          const hasError = fields.some((f) =>
+            errorPaths.some((ep) => ep === f || f.startsWith(ep) || ep.startsWith(f.split(".")[0]))
+          );
+          if (hasError) {
+            setCurrentStep(i);
+            break;
+          }
+        }
+      })} className="space-y-5">
         {currentStepId === "personal" && (
           <div className="space-y-4">
             <Section title="Personal information">
@@ -691,6 +716,9 @@ export function DriverApplicationForm({ defaultPosition = "CDL-A Driver", isTeam
 
         {status === "ok" && <p className="text-sm text-green-400">Application received. We’ll respond within 24 hours.</p>}
         {status === "error" && <p className="text-sm text-destructive">There was an issue submitting. Please try again.</p>}
+        {Object.keys(errors).length > 0 && status !== "loading" && (
+          <p className="text-sm text-amber-400">Some fields have errors. Please review and correct them before submitting.</p>
+        )}
       </form>
     </div>
   );
