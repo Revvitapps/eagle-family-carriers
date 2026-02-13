@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm, type FieldPath } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod/v4";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema, type ApplicantInput } from "@/lib/validation";
 
 const stateOptions = [
